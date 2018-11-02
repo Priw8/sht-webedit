@@ -1,0 +1,63 @@
+<html>
+<head>
+	<title>.sht editor</title>
+	<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+	<div id="tip"></div>
+	<div id="table_container">Nothing will be shown here until you load a file</div>
+	<div class="hover-menu">
+		<div>
+			Open .sht
+			<br>
+			<input type="file" id="file_input" onchange="openFile(this.files)">
+			<br>
+			<select id="sht_ver">
+				<option value="14">v14 (DDC, LoLK)</option>
+			</select>
+			Select .sht version
+		</div>
+		<hr>
+		<div>
+			Export .sht
+			<br><input id="filename" placeholder="filename"><button onclick="exportSht()">export</button><br>
+			<select id="sht_ver_out">
+				<option value="14">v14 (DDC, LoLK)</option>
+			</select>
+			Select .sht version
+		</div>
+		<hr>
+		<div>
+			<b>Navigation</b>
+			<div id="navigation">
+				this will be available once a file is loaded
+			</div>
+		</div>
+		<hr>
+		<div>
+			<b>eval</b>
+			<input id="eval"><button onclick="doEval()">do</button>
+			<div id="eval_result"></div>
+		</div>
+		<hr>
+		<div>
+			<b>rad <-> deg</b>
+			<input id="rad" placeholder="rad"><button onclick="toDeg()">to deg</button>
+			<br>
+			<input id="deg" placeholder="deg"><button onclick="toRad()">to rad</button>
+		</div>
+		<hr>
+		<div id="logs">
+			<b>Logs</b>
+			<div id="log"></div>
+		</div>
+		<hr>
+		.sht webeditor v0.1a by Priw8
+		<br>
+		(discord: Priw8#9873)
+	</div>
+	<script src="struct_15.js"></script>
+	<script src="main.js"></script>
+	<!-- <script src="test.js"></script> -->
+</body>
+</html>

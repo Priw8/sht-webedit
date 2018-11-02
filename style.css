@@ -1,0 +1,57 @@
+body {
+	background: #333333;
+	color: #EEEEEE;
+}
+
+table,  table * {
+	border-collapse: collapse;
+	border: 1px solid #777777;
+}
+input {
+	border: none;
+	background: #444444;
+	color: #EEEEEE;
+}
+button {
+	border: 1px solid #666666;
+	background: #444444;
+	color: #EEEEEE;
+	cursor: pointer;
+}
+b, i {
+	display: block;
+}
+.hover-menu {
+	position: fixed;
+	right: 10px;
+	top: 10px;
+	background: rgba(0,0,0,0.7);
+	padding: 10px;
+	border-radius: 5px;
+}
+
+#log {
+	border: 1px dashed #888888;
+	height: 150px;
+	overflow-y: scroll;
+}
+#log div {
+	font-family: monospace;
+}
+
+#tip {
+	position: absolute;
+	border: 1px solid #888888;
+	background: rgba(0,0,0,0.7);
+	display: none;
+	opacity: 0;
+	border-radius: 3px;
+	padding: 3px;
+}
+
+#navigation div {
+	cursor: pointer;
+}
+#navigation div:hover {
+	background: rgba(255,255,255,0.2);
+}

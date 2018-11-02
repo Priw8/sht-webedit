@@ -28,11 +28,18 @@ function readFile(file) {
 	let struct = getStruct($ver);
 	currentStruct = struct;
 	log("sht version "+$ver.value);
-	readSht(array, struct);
+	try {
+		readSht(array, struct);
+	} catch(e) {
+		log("ERROR: "+e.toString());
+	};
 };
 
 function getStruct($sel) {
 	switch ($sel.value) {
+		case "13":
+			return window.struct_13;
+		break;
 		case "14":
 		case "15":
 			return window.struct_15;
@@ -48,7 +55,12 @@ function exportSht() {
 	if (name == "") name = "export.sht";
 	let struct = getStruct($verOut);
 	log("export sht v"+$verOut.value);
-	let arr = getExportArr(struct);
+	let arr;
+	try {
+		arr = getExportArr(struct);
+	} catch(e) {
+		return log("ERROR: "+e.toString());
+	};
 
 	//it's now necessary to convert the array to binary
 	let binary = new Uint8Array(arr);
@@ -93,7 +105,7 @@ function getExportArr(struct) {
 			case "sht_arr":
 				let {push, offsets} = getExportShtArr(struct);
 				arr.push.apply(arr, push);
-				if (offsets.length != getLastValid(false, "sht_off_cnt")) throw "shoot offset count mismatch";
+				if (offsets.length != getLastValid(false, "sht_off_cnt")) throw "shoot offset count mismatch (should be "+offsets.length+")";
 				for (let j=0; j<offsets.length; j++) {
 					let bytes = uint32ToBytes(offsets[j]).reverse();
 					for (let k=0; k<4; k++) {
@@ -122,6 +134,16 @@ function getExportShtArr(struct) {
 			};
 			arr.push(255, 255, 255, 255);
 		};
+	};
+	if (struct.ver == 13) {
+		// trance shooterset
+		offsets.push(arr.length);
+		for (let i=0; true; i++) {
+			let shooter = getExportOneShooter(struct, "shooter-extra-0-"+i+"-");
+			if (!shooter) break;
+			arr.push.apply(arr, shooter);
+		};
+		arr.push(255, 255, 255, 255);
 	};
 	return {
 		push: arr,
@@ -249,10 +271,12 @@ function readSht(arr, struct) {
 function readShtArr(arr, offset, sht_off, struct, flags_len, pwr_lvl_cnt) {
 	let shooters = {
 		unfocused: [],
-		focused: []
+		focused: [],
+		extra: [] // trance in TD is a separate shooterset
 	};
 	for (let i=0; i<sht_off.length; i++){
-		let foc = i >= sht_off.length/2 ? "focused" : "unfocused";
+		let foc = i >= (pwr_lvl_cnt+1) ? "focused" : "unfocused";	
+		if (i >= (pwr_lvl_cnt+1)*2) foc = "extra";
 		let val = readOneSht(arr, offset + sht_off[i], struct, flags_len, i);
 		shooters[foc].push(val);
 	};
@@ -506,8 +530,12 @@ function generateShootArrayTable(data, struct) {
 	addNavigation("sht_arr");
 	let html = "<h2 id='nav_sht_arr'>sht_arr</h2>";
 	let shtstruct = struct.sht_arr;
-	for (let focused=0; focused<2; focused++) {
-		let foc = (focused ? "focused" : "unfocused");
+	for (let focused=0; focused<3; focused++) {
+		// let foc = (focused ? "focused" : "unfocused");
+		let foc;
+		if (focused == 0) foc = "unfocused";
+		else if (focused == 1) foc = "focused";
+		else foc = "extra";
 		let arr = data.sht_arr[foc];
 		addNavigation("sht_arr_"+foc);
 		html += "<h3 id='nav_sht_arr_"+foc+"'>"+foc+"</h3>";

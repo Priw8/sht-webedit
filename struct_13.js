@@ -1,5 +1,5 @@
-window.struct_15 = {
-	ver: 14,
+window.struct_13 = {
+	ver: 13,
 	main: [
 		"unknown_head", "int16",
 		"sht_off_cnt", "int16",
@@ -13,12 +13,6 @@ window.struct_15 = {
 		"pwr_lvl_cnt", "int16",
 		"max_dmg_u", "int16",
 		"unknown_0", "int32",
-		"unknown_1", "int32",
-		"unknown_2", "int32",
-		"unknown_3", "int32",
-		"unknown_4", "int32",
-		"unknown_5", "int32",
-		"unknown_6", "int32",
 		"option_pos", "option_pos",
 		"sht_off", "sht_off",
 		"sht_arr", "sht_arr"
@@ -45,13 +39,10 @@ window.struct_15 = {
 		"unknown_sht_byte_0", "byte",
 		"anm", "byte",
 		"anm_hit", "byte",
-		// I  think the documentation has an error xd
-		// because flags make no sense if the byte is there
-		// "unknown_sht_byte_1", "byte",
 		"unknown_sht_int16", "int16",
 		"flags", "flags"
 	],
 	option_pos_len: 0xA0,
 	max_opt: 0x04,
-	flags_len: 0x32
+	flags_len: 0x12
 };

@@ -15,6 +15,7 @@
 			<br>
 			<select id="sht_ver">
 				<option value="14">v14 (DDC, LoLK)</option>
+				<option value="13">v13 (TD)</option>
 			</select>
 			Select .sht version
 			<br><br><button onclick="loadTest()">load test .sht (v14, LoLK Sanae)</button>
@@ -24,9 +25,12 @@
 			Export .sht
 			<br><input id="filename" placeholder="filename"><button onclick="exportSht()">export</button><br>
 			<select id="sht_ver_out">
-				<option value="14">v14 (DDC, LoLK)</option>
+				<option value="14">v14 (DDC, LoLK)</option>0
+				<option value="13">v13 (TD)</option>
 			</select>
-			Select .sht version
+			Select .sht version<br>
+			note: exporting to different versions than<br>
+			the original file can give weird results
 		</div>
 		<hr>
 		<div>
@@ -54,11 +58,13 @@
 			<div id="log"></div>
 		</div>
 		<hr>
-		.sht webeditor v0.2a by Priw8
+		.sht webeditor v0.3a by Priw8
 		<br>
 		(discord: Priw8#9873)
+		<br><a href="https://github.com/Priw8/sht-webedit" target="_blank">github repo</a>
 	</div>
 	<script src="struct_15.js"></script>
+	<script src="struct_13.js"></script>
 	<script src="main.js"></script>
 	<!-- <script src="test.js"></script> -->
 </body>

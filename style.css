@@ -21,6 +21,9 @@ button {
 b, i {
 	display: block;
 }
+a {
+	color: lightblue;
+}
 .hover-menu {
 	position: fixed;
 	right: 10px;
@@ -33,10 +36,12 @@ b, i {
 #log {
 	border: 1px dashed #888888;
 	height: 150px;
+	width: 250px;
 	overflow-y: scroll;
 }
 #log div {
 	font-family: monospace;
+	border-bottom: 1px solid gray;
 }
 
 #tip {

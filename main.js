@@ -9,6 +9,7 @@ let $rad = document.querySelector("#rad");
 let $ver = document.querySelector("#sht_ver");
 let $filename = document.querySelector("#filename");
 let $verOut = document.querySelector("#sht_ver_out");
+let currentStruct = null;
 
 function openFile(files) {
 	let sht = files[0];
@@ -25,6 +26,7 @@ function readFile(file) {
 	log("file loaded");
 	console.log(array);
 	let struct = getStruct($ver);
+	currentStruct = struct;
 	log("sht version "+$ver.value);
 	readSht(array, struct);
 };
@@ -438,7 +440,7 @@ function generateEditorTable(data, struct) {
 		} else if (type == "sht_off") {
 			html[2] = generateShotOffsetTable(data, struct);
 		} else if (type == "sht_arr") {
-			html[3] = generateShotArrayTable(data, struct);
+			html[3] = generateShootArrayTable(data, struct);
 		} else {
 			html[0] += `
 			<tr>
@@ -499,7 +501,7 @@ function generateShotOffsetTable(data, struct) {
 	return html;
 };
 
-function generateShotArrayTable(data, struct) {
+function generateShootArrayTable(data, struct) {
 	log("generate sht_arr table");
 	addNavigation("sht_arr");
 	let html = "<h2 id='nav_sht_arr'>sht_arr</h2>";
@@ -513,38 +515,114 @@ function generateShotArrayTable(data, struct) {
 			let shooters = arr[pow];
 			addNavigation("sht_arr_"+foc+"_"+pow);
 			html += "<b id='nav_sht_arr_"+foc+"_"+pow+"'>"+pow+" power "+foc+"</b>";
-			for (let i=0; i<shooters.length; i++) {
-				let shooter = shooters[i];
-				html += "<i>shooter "+i+"</i>";
-				html += "<table>";
-				html += "<tr><th>stat</th><th>value</th></tr>";
-				for (let j=0; j<shtstruct.length; j+=2) {
-					let stat = shtstruct[j];
-					let type = shtstruct[j+1];
-					if (type == "flags") {
-						let flen = struct.flags_len/2;
-						for (let flag=0; flag<flen; flag++) {
-							html += `
-							<tr>
-								<td>flag ${flag}</td>
-								<td><input value="${shooter.flags[flag]}" data-type="int16" data-stat="shooter-${foc}-${pow}-${i}-flag-${flag}"></td>
-							</tr>
-							`;
-						};
-					} else {
-						html += `
-						<tr>
-							<td>${stat}</td>
-							<td><input value="${shooter[stat]}" data-type="${type}" data-stat="shooter-${foc}-${pow}-${i}-${stat}"></td>
-						</tr>
-						`;
-					};
-				};
-				html += "</table>";
+			let i=0;
+			for (i; i<shooters.length; i++) {
+				html += "<div data-shooter='"+foc+"_"+pow+"_"+i+"' class='shooter'>"+generateOneShooterTable(shooters[i], shtstruct, struct.flags_len, foc, pow, i)+"</div>";
 			};
+			html += "<button data-button='addShooter_"+foc+"_"+pow+"' data-i='"+i+"' onclick='addShooter(\""+foc+"\", "+pow+", this)'>Add new shooter</button><br><br>";
 		};
 	};
 	return html;
+};
+
+function generateOneShooterTable(shooter, shtstruct, flags_len, foc, pow, i) {
+	let html = "";
+	html += "<i>shooter "+i+"</i>";
+	html += "<button data-button='removeShooter' onclick='removeShooter(\""+foc+"\", "+pow+", "+i+", this)'>remove shooter</button>";
+	html += "<table>";
+	html += "<tr><th>stat</th><th>value</th></tr>";
+	for (let j=0; j<shtstruct.length; j+=2) {
+		let stat = shtstruct[j];
+		let type = shtstruct[j+1];
+		if (type == "flags") {
+			let flen = flags_len/2;
+			for (let flag=0; flag<flen; flag++) {
+				html += `
+				<tr>
+					<td>flag ${flag}</td>
+					<td><input value="${shooter.flags[flag]}" data-type="int16" data-stat="shooter-${foc}-${pow}-${i}-flag-${flag}"></td>
+				</tr>
+				`;
+			};
+		} else {
+			html += `
+			<tr>
+				<td>${stat}</td>
+				<td><input value="${shooter[stat]}" data-type="${type}" data-stat="shooter-${foc}-${pow}-${i}-${stat}"></td>
+			</tr>
+			`;
+		};
+	};
+	html += "</table>";
+	return html;
+};
+
+function addShooter(foc, pow, $btt) {
+	// i = index of the  shooter to be added
+	let i = Number($btt.dataset.i);
+	let shooter = generateEmptyShooterFromStruct(currentStruct);
+	let html = generateOneShooterTable(shooter, currentStruct.sht_arr, currentStruct.flags_len, foc, pow, i);
+	let $div = document.createElement("div");
+	$div.classList.add("shooter");
+	$div.dataset.shooter = foc+"_"+pow+"_"+i;
+	$div.innerHTML = html;
+
+	$container.insertBefore($div, $btt);
+
+	$btt.dataset.i = i+1;
+	$btt.setAttribute("onclick", "addShooter(\""+foc+"\", "+pow+", this)");
+
+	initLastValids();
+};
+
+function removeShooter(foc, pow, i, $btt) {
+	let $shooter = $btt.parentElement;
+	$shooter.parentElement.removeChild($shooter);
+
+	// because the editor is designed in a shitty way, it's now necessary to do a lot of dumb stuff
+	// drop indexes of all shooter tables below the removed one (!!!)
+	for (i++; true; i++) {
+		let $shooter = document.querySelector("[data-shooter='"+foc+"_"+pow+"_"+i+"']");
+		if (!$shooter) break;
+		let $inps = $shooter.querySelectorAll("[data-stat]");
+		for (let j=0; j<$inps.length; j++) {
+			let stat = $inps[j].dataset.stat;
+			let arr = stat.split("-");
+			arr[3] = i - 1;
+			$inps[j].dataset.stat = arr.join("-");
+		};
+
+		// update the remove button too
+		let $btt = $shooter.querySelector("[data-button='removeShooter']");
+		$btt.setAttribute("onclick", "removeShooter(\""+foc+"\", "+pow+", "+i+", this)");
+
+		// and the text as well
+		let $i = $shooter.querySelector("i");
+		$i.innerHTML = "shooter " + (i-1);
+	};
+
+	// also update the add button
+	let $addBtt = document.querySelector("[data-button='addShooter_"+foc+"_"+pow+"'");
+	$addBtt.dataset.i = $addBtt.dataset.i - 1;
+
+	initLastValids();
+};
+
+function generateEmptyShooterFromStruct(struct) {
+	let shtStruct = struct.sht_arr;
+	let flen = struct.flags_len;
+	let shooter = {};
+	for (let i=0; i<shtStruct.length; i+=2) {
+		let prop = shtStruct[i], type = shtStruct[i+1];
+		if (type != "flags") shooter[prop] = 0;
+		else {
+			shooter[prop] = new Array(flen);
+			for (let i=0; i<flen; i++) {
+				shooter[prop][i] = 0;
+			};
+		};
+	};
+	return shooter;
 };
 
 function addNavigation(id) {
@@ -552,7 +630,7 @@ function addNavigation(id) {
 };
 
 function navigate(id) {
-	location.href = location.origin + location.pathname + "#nav_"+id;
+	location.href = location.origin + location.pathname + location.search + "#nav_"+id;
 };
 
 function generateTips() {
@@ -577,8 +655,8 @@ function showTip($targ) {
 	let tipW = $tip.offsetWidth;
 	let tipH = $tip.offsetHeight;
 
-	$tip.style.left = left + targW/2 - tipW/2;
-	$tip.style.top = top - tipH - 2;
+	$tip.style.left = left + targW/2 - tipW/2 + "px";
+	$tip.style.top = top - tipH - 2 + "px";
 
 	$tip.style.opacity = 1;
 };
@@ -637,6 +715,7 @@ function getLastValid($targ, stat) {
 };
 
 function initLastValids() {
+	lastValidVals = {};
 	let $inps = document.querySelectorAll("[data-stat]");
 	$inps.forEach(saveLastValid);
 };
@@ -674,3 +753,9 @@ let saveByteArray = (function () {
         window.URL.revokeObjectURL(url);
     };
 }());
+
+function loadTest() {
+	let $script = document.createElement("script");
+	$script.src = "test.js";
+	document.head.appendChild($script);
+};

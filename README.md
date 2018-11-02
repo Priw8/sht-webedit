@@ -9,9 +9,11 @@ the tool will be updated with support for more games.
 
 ### Features
 - load data of .sht files into editable tables
+- add new shooters
+- remove old shooters
 - export edited data back to .sht
 - some sidebar tools to make life easier (evaluating js code, radians <-> degrees converer)
 
 ### TODO
 - support more games
-- make adding new shooters possible (right now it can only edit existing ones)
+- support changing pwr_lvl_cnt

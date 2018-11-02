@@ -55,3 +55,6 @@ b, i {
 #navigation div:hover {
 	background: rgba(255,255,255,0.2);
 }
+.shooter {
+	margin-top: 10px;
+}

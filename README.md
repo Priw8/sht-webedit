@@ -1,5 +1,5 @@
 # sht-webedit
-a tool for editing .sht files used in Touhou games
+a tool for editing .sht files used in Touhou games - https://priw8.github.io/sht-webedit/
 
 ### Supported games
 - DDC

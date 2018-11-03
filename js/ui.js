@@ -582,6 +582,11 @@ function addShooterset(foc) {
 function removeShooterset(foc, i) {
 	let arr = shtObject.sht_arr[foc];
 	arr.splice(i, 1);
+	if (activeTable[0] == "sht_arr" && activeTable[1] == foc && activeTable[2] == i) {
+		$container.innerHTML = "";
+		$active = null;
+		tables.active = null;
+	};
 	generateShootArrayTable(shtObject, currentStruct);
 	generateFileTree(true);
 };

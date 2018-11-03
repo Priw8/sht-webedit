@@ -2,70 +2,92 @@
 <html>
 <head>
 	<title>.sht editor</title>
-	<link rel="stylesheet" type="text/css" href="style.css">
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+	<script src="js/struct/struct_15.js"></script>
+	<script src="js/struct/struct_13.js"></script>
+	<script src="js/vartypes.js"></script>
+	<script src="js/export.js"></script>
+	<script src="js/import.js"></script>
+	<script src="js/ui.js"></script>
+	<script src="js/main.js"></script>
 </head>
 <body>
-	<div id="tip"></div>
-	<div id="table_container">Nothing will be shown here until you load a file</div>
-	<div class="hover-menu">
-		<div>
-			Open .sht
-			<br>
-			<input type="file" id="file_input" onchange="openFile(this.files)">
-			<br>
-			<select id="sht_ver">
-				<option value="14">v14 (DDC, LoLK)</option>
-				<option value="13">v13 (TD)</option>
-			</select>
-			Select .sht version
-			<br><br><button onclick="loadTest()">load test .sht (v14, LoLK Sanae)</button>
-		</div>
-		<hr>
-		<div>
-			Export .sht
-			<br><input id="filename" placeholder="filename"><button onclick="exportSht()">export</button><br>
-			<select id="sht_ver_out">
-				<option value="14">v14 (DDC, LoLK)</option>0
-				<option value="13">v13 (TD)</option>
-			</select>
-			Select .sht version<br>
-			note: exporting to different versions than<br>
-			the original file can give weird results
-		</div>
-		<hr>
-		<div>
-			<b>Navigation</b>
-			<div id="navigation">
-				this will be available once a file is loaded
+	<div class="toolbar-inline-positioner"></div>
+	<div class="toolbar">
+		<div class="toolbar-entry">
+			<div class="toolbar-entry-text">File</div>
+			<div class="toolbar-dropdown">
+				<div class="dropdown-entry" data-toolbar="open">Open</div>
+				<div class="dropdown-entry" data-toolbar="opentest">Load test .sht</div>
+				<div class="dropdown-entry" data-toolbar="export">Export</div>
 			</div>
 		</div>
-		<hr>
-		<div>
-			<b>eval</b>
-			<input id="eval"><button onclick="doEval()">do</button>
-			<div id="eval_result"></div>
+		<div class="toolbar-entry">
+			<div class="toolbar-entry-text">Tools</div>
+			<div class="toolbar-dropdown">
+				<div class="dropdown-entry" data-toolbar="console">Console</div>
+				<div class="dropdown-entry" data-toolbar="raddeg">Radian converter</div>
+			</div>
 		</div>
-		<hr>
-		<div>
-			<b>rad <-> deg</b>
-			<input id="rad" placeholder="rad"><button onclick="toDeg()">to deg</button>
-			<br>
-			<input id="deg" placeholder="deg"><button onclick="toRad()">to rad</button>
+		<div class="toolbar-entry">
+			<div class="toolbar-entry-text">Help</div>
+			<div class="toolbar-dropdown">
+				<div class="dropdown-entry" data-toolbar="github">Github repo</div>
+				<div class="dropdown-entry" data-toolbar="info">Info</div>
+			</div>
 		</div>
-		<hr>
-		<div id="logs">
-			<b>Logs</b>
-			<div id="log"></div>
-		</div>
-		<hr>
-		.sht webeditor v0.3a by Priw8
-		<br>
-		(discord: Priw8#9873)
-		<br><a href="https://github.com/Priw8/sht-webedit" target="_blank">github repo</a>
+		<div class="file-info"></div>
 	</div>
-	<script src="struct_15.js"></script>
-	<script src="struct_13.js"></script>
-	<script src="main.js"></script>
-	<!-- <script src="test.js"></script> -->
+
+	<div class="main-wrapper">
+		<div class="file-tree"></div>
+		<div class="table-container"></div>
+	</div>
+
+	<div class="tip"></div>
+
+	<div class="template">
+		<div class="editor-window template">
+			<div class="window-topbar">
+				<div class="window-header">Alert</div>
+				<div class="window-close">X</div>
+			</div>
+			<div class="window-content">
+			</div>
+		</div>
+		<div class="console">
+			<div class="log"></div>
+			<div class="eval">
+				<input class="eval-input">
+			</div>
+		</div>
+		<div class="raddeg">
+			<table>
+				<tr><td>Radians</td><td><input class="rad-input"></td><td><button class="deg-btt" onclick="toDeg()">To degrees</button></td></tr>
+				<tr><td>Degrees</td><td><input class="deg-input"></td><td><button class="rad-btt" onclick="toRad()">To radians</button></td></tr>
+			</table>
+		</div>
+		<div class="open">
+			<input type="file" class="file-input" accept=".sht" onchange="openFile(this.files)">
+			<button onclick="readFile()">Load</button>
+			<div class="version-select">
+				<select class="sht-ver">
+					<option value="14">v14 (DDC, LoLK)</option>
+					<option value="13">v13 (TD)</option>
+				</select>
+				Select .sht version
+			</div>
+		</div>
+		<div class="export">
+			<input placeholder="filename" class="filename"> <button onclick="exportSht()">Export</button>
+				<div class="version-select">
+				<select class="sht-ver-out">
+					<option value="14">v14 (DDC, LoLK)</option>
+					<option value="13">v13 (TD)</option>
+				</select>
+				Select .sht version
+			</div>
+		</div>
+	</div>
 </body>
 </html>

@@ -77,17 +77,34 @@ function getExportArr(struct) {
 				let cnt = getLastValid("main", "sht_off_cnt");
 				sht_off_off = arr.length;
 				// push placeholder values
-				arr.push.apply(arr, new Array(cnt*4)); //cnt - amount of offsets, every offset is uint32 so 4 bytes
+				let entrySize = struct.ver > 12 ? 4 : 8;
+				arr.push.apply(arr, new Array(cnt*entrySize)); //cnt - amount of offsets
 				// these values will be later updated
 			break;
 			case "sht_arr":
 				let {push, offsets} = getExportShtArr(struct);
 				arr.push.apply(arr, push);
 				if (offsets.length != getLastValid("main", "sht_off_cnt")) throw "shoot offset count mismatch (should be "+offsets.length+")";
+				let entrysize = struct.ver > 12 ? 4 : 8;
 				for (let j=0; j<offsets.length; j++) {
-					let bytes = uint32ToBytes(offsets[j]).reverse();
+					let off = struct.sht_off_type == "rel" ? offsets[j] : offsets[j] + sht_off_off + offsets.length*entrysize;
+					let bytes = uint32ToBytes(off).reverse();
 					for (let k=0; k<4; k++) {
-						arr[sht_off_off + j*4 + k] = bytes[k];
+						arr[sht_off_off + j*entrysize + k] = bytes[k];
+					};
+					if (entrysize == 8) {
+						if (j == 0 || j == offsets.length/2) {
+							arr[sht_off_off + j*entrysize + 4] = 0x08;
+							arr[sht_off_off + j*entrysize + 5] = 0x00;
+							arr[sht_off_off + j*entrysize + 6] = 0x00;
+							arr[sht_off_off + j*entrysize + 7] = 0x00;
+						} else {
+							arr[sht_off_off + j*entrysize + 4] = 0xE7;
+							arr[sht_off_off + j*entrysize + 5] = 0x03;
+							arr[sht_off_off + j*entrysize + 6] = 0x00;
+							arr[sht_off_off + j*entrysize + 7] = 0x00;
+							//int32=999
+						};
 					};
 				};
 			break;
@@ -177,12 +194,26 @@ function getExportOneShooter(struct, foc, pow, index) {
 
 function getExportOptPos(struct) {
 	let arr = new Array(struct.option_pos_len);
-	for (let i=0; i<arr.length; i++) arr[i] = 0;
+	for (let i=0; i<arr.length; i+=4) {
+		if (struct.ver > 12) {
+			arr[i] = 0x00;
+			arr[i+1] = 0x00;
+			arr[i+2] = 0x00;
+			arr[i+3] = 0x00;
+		} else {
+			arr[i] = 0x00;
+			arr[i+1] = 0xC0;
+			arr[i+2] = 0x79;
+			arr[i+3] = 0xC4;
+			// 999.0f
+		};
+	};
 	let pwr_lvl_cnt = getLastValid("main", "pwr_lvl_cnt");
 	let j = 0;
+	let max = struct.ver > 12 ? struct.max_opt : shtObject.pwr_lvl_cnt;
 	for (let focused=0; focused<2; focused++) {
 		let foc = focused ? "focused" : "unfocused";
-		for (let pow=1; pow<=struct.max_opt; pow++) {
+		for (let pow=1; pow<=max; pow++) {
 			for (let i=0; i<pow; i++) {
 				let x = getLastValid("option_pos", foc+"-"+pow+"-"+i+"-x");
 				let y = getLastValid("option_pos", foc+"-"+pow+"-"+i+"-y");

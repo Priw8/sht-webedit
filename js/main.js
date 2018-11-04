@@ -1,9 +1,15 @@
-let version = "1.1b";
-let changelog = ["ISC support", "forced sht_off_cnt values because ZUN's parser is janky and expects shooterset array to start at a static offset"];
+let version = "1.3a";
+let changelog = ["UFO support", "GFW support"];
 let $fileinfo, $console, $logs, $evalInput, $radDeg, $radInput, $degInput, $filetree, $container, $tip, $open, $ver, $verOut, $filename, $export, $log ,currentStruct, saveByteArray;
 
 function getStruct($sel) {
 	switch ($sel.value) {
+		case "12":
+			return window.struct_12;
+		break;
+		case "12.8":
+			return window.struct_128;
+		break;
 		case "13":
 			return window.struct_13;
 		break;

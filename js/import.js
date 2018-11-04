@@ -65,15 +65,16 @@ function readSht(arr, struct) {
 			//special cases
 			case "option_pos":
 				len = struct.option_pos_len;
-				val = readOptionPos(arr, offset, struct.max_opt);
+				let max = struct.ver > 12 ? struct.max_opt : data.pwr_lvl_cnt;
+				val = readOptionPos(arr, offset, max);
 			break;
 			case "sht_off":
 				len = data.sht_off_cnt*4;
-				val = readShtOff(arr, offset, data.sht_off_cnt);
+				val = readShtOff(arr, offset, data.sht_off_cnt, struct);
 			break;
 			case "sht_arr":
 				len = 99999999999999999999999;
-				val = readShtArr(arr, offset, data.sht_off, struct.sht_arr, struct.flags_len, data.pwr_lvl_cnt);
+				val = readShtArr(arr, offset, data.sht_off, struct.sht_arr, struct.flags_len, data.pwr_lvl_cnt, struct.sht_off_type);
 			break;
 			default:
 				throw "unknown datatype - "+type;
@@ -86,7 +87,7 @@ function readSht(arr, struct) {
 	generateEditorTable(data, struct);
 };
 
-function readShtArr(arr, offset, sht_off, struct, flags_len, pwr_lvl_cnt) {
+function readShtArr(arr, offset, sht_off, struct, flags_len, pwr_lvl_cnt, off_type) {
 	let shooters = {
 		unfocused: [],
 		focused: [],
@@ -101,7 +102,8 @@ function readShtArr(arr, offset, sht_off, struct, flags_len, pwr_lvl_cnt) {
 			// photogames are weird
 			foc = "extra";
 		};
-		let val = readOneSht(arr, offset + sht_off[i], struct, flags_len, i);
+		let off = off_type == "rel" ? offset + sht_off[i] : sht_off[i];
+		let val = readOneSht(arr, off, struct, flags_len, i);
 		shooters[foc].push(val);
 	};
 	return shooters;
@@ -163,12 +165,17 @@ function readOneSht(arr, offset, struct, flags_len, pow) {
 	return data;
 };
 
-function readShtOff(arr, offset, cnt) {
+function readShtOff(arr, offset, cnt, struct) {
 	let off = [];
+	let off_struct = struct.sht_off;
 	for (let i=0; i<cnt; i++) {
-		let val = readUint32(arr[offset+3], arr[offset+2], arr[offset+1], arr[offset]);
-		off.push(val);
-		offset += 4;
+		for (let j=0; j<off_struct.length; j+=2) {
+			if (off_struct[j] == "offset") {
+				let val = readUint32(arr[offset+3], arr[offset+2], arr[offset+1], arr[offset]);
+				off.push(val);
+			};
+			offset += 4;
+		};
 	};
 	return off;
 };

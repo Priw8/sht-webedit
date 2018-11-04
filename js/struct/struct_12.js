@@ -1,5 +1,5 @@
-window.struct_143 = {
-	ver: 14.3,
+window.struct_12 = {
+	ver: 12,
 	main: [
 		"unknown_head", "int16",
 		"sht_off_cnt", "int16",
@@ -13,12 +13,6 @@ window.struct_143 = {
 		"pwr_lvl_cnt", "int16",
 		"max_dmg_u", "int16",
 		"unknown_0", "int32",
-		"unknown_1", "int32",
-		"unknown_2", "int32",
-		"unknown_3", "int32",
-		"unknown_4", "int32",
-		"unknown_5", "int32",
-		"unknown_6", "int32",
 		"option_pos", "option_pos",
 		"sht_off", "sht_off",
 		"sht_arr", "sht_arr"
@@ -28,7 +22,8 @@ window.struct_143 = {
 		"y", "float"
 	],
 	sht_off: [
-		"offset", "uint32"
+		"offset", "uint32",
+		"jank", "int32"
 	],
 	sht_arr: [
 		"fire_rate", "byte",
@@ -40,18 +35,17 @@ window.struct_143 = {
 		"hitbox_y", "float",
 		"angle", "float",
 		"speed", "float",
-		"unknown_sht_int32", "int32",
 		"option", "byte",
 		"unknown_sht_byte_0", "byte",
-		"anm", "byte",
-		"anm_hit", "byte",
+		"anm", "int16",
+		"anm_hit", "int16",
 		"unknown_sht_int16", "int16",
 		"flags", "flags"
 	],
-	sht_off_type: "rel",
-	option_pos_len: 0xA0,
-	max_opt: 0x04,
-	flags_len: 0x32,
-	type: "photogame",
-	forced_shtoffarr_len: 0x0A
+	sht_off_type: "abs",
+	option_pos_len: 0x240,
+	max_opt: 0x08,
+	flags_len: 0x10,
+	type: "maingame",
+	forced_shtoffarr_len: false
 };

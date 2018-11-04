@@ -48,6 +48,7 @@ window.struct_15 = {
 		"unknown_sht_int16", "int16",
 		"flags", "flags"
 	],
+	sht_off_type: "rel",
 	option_pos_len: 0xA0,
 	max_opt: 0x04,
 	flags_len: 0x32,

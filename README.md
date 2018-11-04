@@ -2,6 +2,8 @@
 a tool for editing .sht files used in Touhou games - https://priw8.github.io/sht-webedit/
 
 ### Supported games
+- TH12 - Undefined Fantastic Object
+- TH12.8 - Great Fairy Wars
 - TH13 - Ten Desires
 - TH14 - Double Dealing Character
 - TH14.3 - Impossible Spell Card

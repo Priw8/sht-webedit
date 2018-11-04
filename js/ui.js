@@ -106,7 +106,7 @@ function openImport() {
 	editorWindow({
 		header: "Open",
 		content: $open,
-		width: 313
+		width: 343
 	});
 };
 
@@ -451,7 +451,7 @@ function generateOptionPosTable(data, struct) {
 function generateShotOffsetTable(data, struct) {
 	log("generate sht_off table");
 	let offs = data.sht_off;
-	let html = "";
+	let html = "<h3>This table is read-only, offsets are recalculated when exporting</h3>";
 	html += "<table>";
 	html += "<tr><th>no.</th><th>offset</th></tr>";
 	for (let i=0; i<offs.length; i++) {

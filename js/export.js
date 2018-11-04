@@ -222,6 +222,13 @@ function getExportOptPos(struct) {
 				for (let k=0; k<4; k++) arr[j+k] = xBytes[k];
 				for (let k=4; k<8; k++) arr[j+k] = yBytes[k-4];
 				j+=8;
+				if (struct.ver == 10) { // janky game with some weirdass padding
+					arr[j] = 0;
+					arr[j+1] = 0;
+					arr[j+2] = 0;
+					arr[j+3] = 0;
+					j+=4;
+				};
 			};
 		};
 	};

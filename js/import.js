@@ -34,7 +34,8 @@ function readSht(arr, struct) {
 	let offset = 0;
 	let i = 0;
 	let data = {};
-	//TODO: unspaghetti this piece of shit
+	if (struct.ver == 10) data.pwr_lvl_cnt = 4; // janky format of a janky game
+
 	while(offset < arr.length) {
 		let prop = main[i], type = main[i+1];
 		let val, len;
@@ -66,7 +67,7 @@ function readSht(arr, struct) {
 			case "option_pos":
 				len = struct.option_pos_len;
 				let max = struct.ver > 12 ? struct.max_opt : data.pwr_lvl_cnt;
-				val = readOptionPos(arr, offset, max);
+				val = readOptionPos(arr, offset, max, struct.ver);
 			break;
 			case "sht_off":
 				len = data.sht_off_cnt*4;
@@ -180,7 +181,7 @@ function readShtOff(arr, offset, cnt, struct) {
 	return off;
 };
 
-function readOptionPos(arr, offset, max_opt) {
+function readOptionPos(arr, offset, max_opt, ver) {
 	let opts = {
 		unfocused: [],
 		focused: []
@@ -196,6 +197,7 @@ function readOptionPos(arr, offset, max_opt) {
 					y: y
 				});
 				offset += 8;
+				if (ver == 10) offset += 4;
 			};
 		};
 	};

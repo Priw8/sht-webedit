@@ -34,25 +34,6 @@ b, i {
 a {
 	color: lightblue;
 }
-.hover-menu {
-	position: fixed;
-	right: 10px;
-	top: 10px;
-	background: rgba(0,0,0,0.7);
-	padding: 10px;
-	border-radius: 5px;
-}
-
-#navigation div {
-	cursor: pointer;
-}
-#navigation div:hover {
-	background: rgba(255,255,255,0.2);
-}
-.shooter {
-	margin-top: 10px;
-}
-
 
 .template {
 	display: none;

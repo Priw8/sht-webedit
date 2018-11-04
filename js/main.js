@@ -1,9 +1,13 @@
-let version = "1.3a";
-let changelog = ["UFO support", "GFW support"];
+let version = "1.4a";
+let changelog = ["SA support", "MoF support"];
 let $fileinfo, $console, $logs, $evalInput, $radDeg, $radInput, $degInput, $filetree, $container, $tip, $open, $ver, $verOut, $filename, $export, $log ,currentStruct, saveByteArray;
 
 function getStruct($sel) {
 	switch ($sel.value) {
+		case "10":
+			return window.struct_10;
+		break;
+		case "11":
 		case "12":
 			return window.struct_12;
 		break;

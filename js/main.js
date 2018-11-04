@@ -17,6 +17,7 @@ function getStruct($sel) {
 		case "16":
 			return window.struct_16;
 		break;
+		case "16.5": //actually ca be loaded in the same way I guess
 		case "16-sub":
 			return window.struct_16_sub;
 		break;

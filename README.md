@@ -6,6 +6,8 @@ a tool for editing .sht files used in Touhou games - https://priw8.github.io/sht
 - TH14 - Double Dealing Character
 - TH14.3 - Impossible Spell Card
 - TH15 - Legacy of Lunatic Kingdom
+- TH16 - Hidden Star in Four Seasons
+- TH16.5 - Violet Detector
 
 the tool will be updated with support for more games.
 

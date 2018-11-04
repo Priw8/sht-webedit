@@ -14,6 +14,12 @@ function getStruct($sel) {
 		case "14.3":
 			return window.struct_143;
 		break;
+		case "16":
+			return window.struct_16;
+		break;
+		case "16-sub":
+			return window.struct_16_sub;
+		break;
 		default:
 			throw "unsupported version";
 		break;

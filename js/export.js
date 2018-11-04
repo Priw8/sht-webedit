@@ -21,11 +21,6 @@ function exportSht() {
 function validateExport(data, struct) {
 	let ver = struct.ver;
 
-	//validate power level in games that can't change it (ZUN's parser is janky and expects shooterset array to always start at the same position, which won't happen with different power levels)
-	if (!struct.pwr_editable) {
-		if (data.pwr_lvl_cnt != struct.def_power) throw "pwr_lvl_cnt must be "+struct.def_power+" in this version because ZUN's parser is janky";
-	};
-
 	//check if trance shooterset exists
 	if (ver == 13) {
 		if (data.sht_arr.extra.length < 1) throw "trance shooterset doesn't exist";
@@ -43,6 +38,11 @@ function validateExport(data, struct) {
 	let cnt = data.sht_off_cnt;
 	let sum = data.sht_arr.unfocused.length + data.sht_arr.focused.length + data.sht_arr.extra.length;
 	if (cnt != sum) throw "bad sht_off_cnt (should be "+sum+")";
+
+	//ZUN's parser is jank and expects shooterset array offset to be static, so some games have forced shtoffarr lengths
+	if (struct.forced_shtoffarr_len) {
+		if (cnt != struct.forced_shtoffarr_len) throw "ZUN's parser is jank and expects shooterset array to start at a static offset, so sht_off_cnt must be "+struct.forced_shtoffarr_len+". If it's too small, you can add empty extra shootersets, if it's too big... well, then you can't do whatever you're trying to do"
+	};
 };
 
 function getExportArr(struct) {

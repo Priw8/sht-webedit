@@ -1,5 +1,5 @@
-let version = "1.1a";
-let changelog = ["ISC support", "blocked changing pwr_lvl_cnt because ZUN's parser is janky and expects the shooterset array to always begin on the same offset"];
+let version = "1.1b";
+let changelog = ["ISC support", "forced sht_off_cnt values because ZUN's parser is janky and expects shooterset array to start at a static offset"];
 let $fileinfo, $console, $logs, $evalInput, $radDeg, $radInput, $degInput, $filetree, $container, $tip, $open, $ver, $verOut, $filename, $export, $log ,currentStruct, saveByteArray;
 
 function getStruct($sel) {

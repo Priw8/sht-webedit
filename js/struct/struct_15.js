@@ -52,6 +52,5 @@ window.struct_15 = {
 	max_opt: 0x04,
 	flags_len: 0x32,
 	type: "maingame",
-	pwr_editable: false,
-	def_power: 4
+	forced_shtoffarr_len: 0x0A
 };

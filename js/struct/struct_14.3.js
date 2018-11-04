@@ -52,6 +52,5 @@ window.struct_143 = {
 	max_opt: 0x04,
 	flags_len: 0x32,
 	type: "photogame",
-	pwr_editable: false,
-	def_power: 0
+	forced_shtoffarr_len: 0x0A
 };

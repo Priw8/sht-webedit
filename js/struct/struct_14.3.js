@@ -1,5 +1,5 @@
-window.struct_15 = {
-	ver: 14,
+window.struct_143 = {
+	ver: 14.3,
 	main: [
 		"unknown_head", "int16",
 		"sht_off_cnt", "int16",
@@ -51,7 +51,7 @@ window.struct_15 = {
 	option_pos_len: 0xA0,
 	max_opt: 0x04,
 	flags_len: 0x32,
-	type: "maingame",
+	type: "photogame",
 	pwr_editable: false,
-	def_power: 4
+	def_power: 0
 };

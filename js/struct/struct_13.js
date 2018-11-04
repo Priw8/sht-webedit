@@ -44,5 +44,8 @@ window.struct_13 = {
 	],
 	option_pos_len: 0xA0,
 	max_opt: 0x04,
-	flags_len: 0x12
+	flags_len: 0x12,
+	type: "maingame",
+	pwr_editable: false,
+	def_power: 4
 };

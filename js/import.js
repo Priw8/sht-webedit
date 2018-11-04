@@ -93,8 +93,14 @@ function readShtArr(arr, offset, sht_off, struct, flags_len, pwr_lvl_cnt) {
 		extra: [] // trance in TD is a separate shooterset
 	};
 	for (let i=0; i<sht_off.length; i++){
-		let foc = i >= (pwr_lvl_cnt+1) ? "focused" : "unfocused";	
-		if (i >= (pwr_lvl_cnt+1)*2) foc = "extra";
+		let foc;
+		if (currentStruct.type == "maingame") {
+			foc = i >= (pwr_lvl_cnt+1) ? "focused" : "unfocused";	
+			if (i >= (pwr_lvl_cnt+1)*2) foc = "extra";
+		} else {
+			// photogames are weird
+			foc = "extra";
+		};
 		let val = readOneSht(arr, offset + sht_off[i], struct, flags_len, i);
 		shooters[foc].push(val);
 	};
@@ -107,8 +113,8 @@ function readOneSht(arr, offset, struct, flags_len, pow) {
 	let data = [];
 	let shooter = 0;
 	while(offset < arr.length) {
+		if ((i >= struct.length || i == 0) && (arr[offset] == 255 && arr[offset+1] == 255 && arr[offset+2] == 255 && arr[offset+3] == 255)) break;
 		if (i >= struct.length) {
-			if (arr[offset] == 255 && arr[offset+1] == 255 && arr[offset+2] == 255 && arr[offset+3] == 255) break;
 			i = 0;
 			shooter++;
 		};
@@ -144,9 +150,6 @@ function readOneSht(arr, offset, struct, flags_len, pow) {
 				for (let i=0; i<len; i+=2) {
 					val.push(readInt16(arr[offset+i+1], arr[offset+i]));
 				};
-				/*for (let i=0; i<len; i++) {
-					val.push(arr[offset+i]);
-				};*/
 			break;
 			default:
 				throw "unknown datatype - "+type;

@@ -2,9 +2,10 @@
 a tool for editing .sht files used in Touhou games - https://priw8.github.io/sht-webedit/
 
 ### Supported games
-- TD
-- DDC
-- LoLK
+- TH13 - Ten Desires
+- TH14 - Double Dealing Character
+- TH14.3 - Impossible Spell Card
+- TH15 - Legacy of Lunatic Kingdom
 
 the tool will be updated with support for more games.
 
@@ -16,7 +17,6 @@ the tool will be updated with support for more games.
 
 ### TODO
 - support more games
-- support changing pwr\_lvl\_cnt (in current state it might work, but it's not officially supported yet)
 
 ### How .sht files work
 Basically there's a header (the "main" table) which stores the basic informations. After the header, there are option positions for each power level (power level = option count). Then there's the shooterset offset array, which stores offsets of shootersets in the shooterset array. The shooterset array comes right after the shooterset offset array, and consists of shootersets separated by 4 FF bytes. Basically, if pwr_lvl_cnt (max power level) is 4, there should be 10 shootersets - 5 for each power level of the unfocused shot and 5 for each level of the focused shot (0 power shooterset exists, despite power starting at 1 in the game. It's used in HSiFS during the Okina finals). In some cases, there can be more shootersets (TD has one more for trance mode). A shooterset itself is a set of shooters (duh). A shooter contains data of a single bullet the player/option fires, and the frequency it should fire at. So if you want an option to shoot 2 bullets at once, you have to assign it to 2 shooters.

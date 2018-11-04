@@ -21,15 +21,23 @@ function exportSht() {
 function validateExport(data, struct) {
 	let ver = struct.ver;
 
+	//validate power level in games that can't change it (ZUN's parser is janky and expects shooterset array to always start at the same position, which won't happen with different power levels)
+	if (!struct.pwr_editable) {
+		if (data.pwr_lvl_cnt != struct.def_power) throw "pwr_lvl_cnt must be "+struct.def_power+" in this version because ZUN's parser is janky";
+	};
+
 	//check if trance shooterset exists
 	if (ver == 13) {
 		if (data.sht_arr.extra.length < 1) throw "trance shooterset doesn't exist";
 	};
 
 	//check amount of foc/unfoc shootersets
-	let len = data.pwr_lvl_cnt + 1;
-	if (data.sht_arr.focused.length != len) throw "bad amount of focused shootersets (should be "+len+")";
-	if (data.sht_arr.unfocused.length != len) throw "bad amount of unfocused shootersets (should be "+len+")";
+	//ingore for photogames since their .shts are janky
+	if (struct.type == "maingame") {
+		let len = data.pwr_lvl_cnt + 1;
+		if (data.sht_arr.focused.length != len) throw "bad amount of focused shootersets (should be "+len+")";
+		if (data.sht_arr.unfocused.length != len) throw "bad amount of unfocused shootersets (should be "+len+")";
+	};
 
 	//check if sht_off_cnt equals the amount of shootersets
 	let cnt = data.sht_off_cnt;
@@ -93,21 +101,26 @@ function getExportShtArr(struct) {
 	let arr = [];
 	let offsets = [];
 	let pwr_lvl_cnt = getLastValid("main", "pwr_lvl_cnt");
-	for (let focused=0; focused<2; focused++) {
-		let foc = focused ? "focused" : "unfocused";
-		for (let pow=0; pow<=pwr_lvl_cnt; pow++) {
-			offsets.push(arr.length);
-			let shooterset = shtObject.sht_arr[foc][pow];
-			if (shooterset) {
-				for (let i=0; i<shooterset.length; i++) {
-					let shooter = getExportOneShooter(struct, foc, pow, i);
-					if (!shooter) break;
-					arr.push.apply(arr, shooter);
+
+	// photogames only have extra shootersets
+	if (struct.type == "maingame") {
+		for (let focused=0; focused<2; focused++) {
+			let foc = focused ? "focused" : "unfocused";
+			for (let pow=0; pow<=pwr_lvl_cnt; pow++) {
+				offsets.push(arr.length);
+				let shooterset = shtObject.sht_arr[foc][pow];
+				if (shooterset) {
+					for (let i=0; i<shooterset.length; i++) {
+						let shooter = getExportOneShooter(struct, foc, pow, i);
+						if (!shooter) break;
+						arr.push.apply(arr, shooter);
+					};
 				};
+				arr.push(255, 255, 255, 255);
 			};
-			arr.push(255, 255, 255, 255);
 		};
 	};
+
 	// extra shootersets (such as trance in TD)
 	let extra = shtObject.sht_arr.extra;
 	for (let cnt=0; cnt<extra.length; cnt++) {
@@ -169,7 +182,7 @@ function getExportOptPos(struct) {
 	let j = 0;
 	for (let focused=0; focused<2; focused++) {
 		let foc = focused ? "focused" : "unfocused";
-		for (let pow=1; pow<=pwr_lvl_cnt; pow++) {
+		for (let pow=1; pow<=struct.max_opt; pow++) {
 			for (let i=0; i<pow; i++) {
 				let x = getLastValid("option_pos", foc+"-"+pow+"-"+i+"-x");
 				let y = getLastValid("option_pos", foc+"-"+pow+"-"+i+"-y");

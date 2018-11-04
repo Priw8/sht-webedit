@@ -1,5 +1,5 @@
-let version = "1.0a";
-let changelog = ["completely new UI", "code is less spaghetti", "add/remove shootersets"];
+let version = "1.1a";
+let changelog = ["ISC support", "blocked changing pwr_lvl_cnt because ZUN's parser is janky and expects the shooterset array to always begin on the same offset"];
 let $fileinfo, $console, $logs, $evalInput, $radDeg, $radInput, $degInput, $filetree, $container, $tip, $open, $ver, $verOut, $filename, $export, $log ,currentStruct, saveByteArray;
 
 function getStruct($sel) {
@@ -10,6 +10,9 @@ function getStruct($sel) {
 		case "14":
 		case "15":
 			return window.struct_15;
+		break;
+		case "14.3":
+			return window.struct_143;
 		break;
 		default:
 			throw "unsupported version";

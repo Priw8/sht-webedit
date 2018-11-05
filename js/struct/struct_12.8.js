@@ -1,5 +1,6 @@
 window.struct_128 = {
 	ver: 12,
+	editorVer: "12.8",
 	main: [
 		"unknown_head", "int16",
 		"sht_off_cnt", "int16",

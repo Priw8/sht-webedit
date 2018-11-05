@@ -1,9 +1,11 @@
-let version = "1.5a";
-let changelog = ["clipboard"];
-let $fileinfo, $console, $logs, $evalInput, $radDeg, $radInput, $degInput, $filetree, $container, $tip, $open, $ver, $verOut, $filename, $export, $log, $clipboard, currentStruct, saveByteArray;
+let version = "1.6a";
+let changelog = ["saving and loading from browser storage"];
+let $fileinfo, $console, $logs, $evalInput, $radDeg, $radInput, $degInput, $filetree, $container, $tip, $open, $ver, 
+	$verOut, $filename, $export, $log, $clipboard, $openLS, $openLSsel, currentStruct, saveByteArray;
 
-function getStruct($sel) {
-	switch ($sel.value) {
+function getStruct($sel, raw) {
+	let val = raw ? $sel : $sel.value;
+	switch (val) {
 		case "10":
 			return window.struct_10;
 		break;
@@ -61,6 +63,10 @@ window.onload = () => {
 	$export = document.querySelector(".export");
 	$filename = document.querySelector(".filename");
 	$verOut = document.querySelector(".sht-ver-out");
+	$verOut.innerHTML = $ver.innerHTML;
+
+	$openLS = document.querySelector(".openLS");
+	$openLSsel = document.querySelector(".openLS-sel");
 
 	saveByteArray = (function () {
 		let a = document.createElement("a");

@@ -13,9 +13,11 @@ function exportSht() {
 		throw e;
 	};
 
-	// it's now necessary to convert the array to binary
-	let binary = new Uint8Array(arr);
-	saveByteArray([binary], name);
+	if (!exportLS) {
+		// it's now necessary to convert the array to binary
+		let binary = new Uint8Array(arr);
+		saveByteArray([binary], name);
+	} else exportToLS(arr, name, struct.editorVer);
 };
 
 function validateExport(data, struct) {

@@ -15,6 +15,7 @@
 	<script src="js/export.js"></script>
 	<script src="js/import.js"></script>
 	<script src="js/ui.js"></script>
+	<script src="js/sanae.js"></script>
 	<script src="js/main.js"></script>
 </head>
 <body>
@@ -23,9 +24,11 @@
 		<div class="toolbar-entry">
 			<div class="toolbar-entry-text">File</div>
 			<div class="toolbar-dropdown">
-				<div class="dropdown-entry" data-toolbar="open">Open</div>
-				<div class="dropdown-entry" data-toolbar="opentest">Load test .sht</div>
-				<div class="dropdown-entry" data-toolbar="export">Export</div>
+				<div class="dropdown-entry" data-toolbar="open">Load (disk)</div>
+				<div class="dropdown-entry" data-toolbar="openLS">Load (browser storage)</div>
+				<!-- <div class="dropdown-entry" data-toolbar="opentest">Load test .sht</div> -->
+				<div class="dropdown-entry" data-toolbar="export">Save (disk)</div>
+				<div class="dropdown-entry" data-toolbar="exportLS">Save (browser storage)</div>
 			</div>
 		</div>
 		<div class="toolbar-entry">
@@ -98,23 +101,15 @@
 			</div>
 		</div>
 		<div class="export">
-			<input placeholder="filename" class="filename"> <button onclick="exportSht()">Export</button>
+			<input placeholder="filename" class="filename"> <button onclick="exportSht()">Save</button>
 				<div class="version-select">
-				<select class="sht-ver-out">
-					<option value="16.5">v16.5 (VD)</option>
-					<option value="16">v16 (HSiFS)</option>
-					<option value="16-sub">v16-sub (HSiFS subseason)</option>
-					<option value="15">v15 (LoLK)</option>
-					<option value="14.3">v14.3 (ISC)</option>
-					<option value="14">v14 (DDC)</option>
-					<option value="13">v13 (TD)</option>
-					<option value="12.8">v12.8 (GFW)</option>
-					<option value="12">v12 (UFO)</option>
-					<option value="11">v11 (SA)</option>
-					<option value="10">v10 (MoF)</option>
-				</select>
+				<select class="sht-ver-out"></select>
 				Select .sht version
 			</div>
+		</div>
+		<div class="openLS">
+			<b>Select file from previously saved</b>
+			<select class="openLS-sel"></select> <button onclick="loadLS()">Load</button> <button onclick="deleteFromLS()">Delete</button>
 		</div>
 	</div>
 </body>

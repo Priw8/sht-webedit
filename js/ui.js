@@ -16,6 +16,8 @@ let shtObject = null;
 
 let clipboard = [];
 
+let exportLS = false;
+
 function getTemplate(classname) {
 	let temp = document.querySelector("."+classname+".template").cloneNode(true);
 	temp.classList.remove("template");
@@ -39,11 +41,17 @@ function toolbarAction(action) {
 		case "open":
 			openImport();
 		break;
-		case "opentest":
-			loadTest();
+		case "openLS":
+			openImportLS();
 		break;
+		/*case "opentest":
+			loadTest();
+		break;*/
 		case "export":
-			openExport();
+			openExport(false);
+		break;
+		case "exportLS":
+			openExport(true);
 		break;
 		case "console":
 			openConsole();
@@ -104,6 +112,12 @@ function editorWindow(options) {
 	if (options.success) options.success();
 };
 
+function cAlert(txt) {
+	editorWindow({
+		content: txt
+	});
+};
+
 function openImport() {
 	editorWindow({
 		header: "Open",
@@ -112,13 +126,111 @@ function openImport() {
 	});
 };
 
-function openExport() {
+function openImportLS() {
+	populateOpenLSsel();
+	editorWindow({
+		header: "Open",
+		content: $openLS,
+		width: 363
+	});
+};
+
+function populateOpenLSsel() {
+	let list = localStorage.getItem("___fileIndex");
+	if (list == null) list = [];
+	else list = JSON.parse(list);
+	list.unshift("LoLK Sanae (bundled with the editor)", 15);
+	
+	let html = "";
+	for (let i=0; i<list.length; i+=2) {
+		html += "<option value='"+(i/2)+"'>"+list[i]+"</option>";
+	};
+
+	$openLSsel.innerHTML = html;
+};
+
+function loadLS() {
+	let ind = $openLSsel.value - 1; // ind=-1 is the bundled sanae
+	if (ind == -1) {
+		currentStruct = window.struct_15;
+		readSht(window._testshot, window.struct_15);
+		setFileInfo("LoLK Sanae.sht");
+	} else {
+		let list = localStorage.getItem("___fileIndex");
+		list = JSON.parse(list);
+		let name = list[ind], ver = list[ind+1];
+		let file = localStorage.getItem("localshot_"+name);
+		if (file == null) {
+			deleteFromLS(ind);
+			populateOpenLSsel();
+			return cAlert("File not in storage!");
+		};
+		try {
+			let arr = readLSfile(file);
+			let struct = getStruct(ver, true);
+			currentStruct = struct;
+			readSht(arr, struct);
+			setFileInfo(name);
+		} catch(e) {
+			deleteFromLS(ind);
+			populateOpenLSsel();
+			cAlert("File is corrupted!");
+			throw e;
+		};
+	};
+};
+
+function readLSfile(file) {
+	// file = string made of bytes in hex
+	let arr = [];
+	for (let i=0; i<file.length; i+=2) {
+		let val = parseInt(file[i] + file[i+1], 16);
+		if (isNaN(val)) throw "file corrupted";
+		arr.push(val);
+	};
+	return arr;
+};
+
+function deleteFromLS(ind) {
+	if (typeof ind == "undefined") ind = $openLSsel.value - 1;
+	if (ind == -1) return cAlert("You can't delete the budled .sht<br>It's not actually stored in the browser storage anyway.");
+	let list = localStorage.getItem("___fileIndex");
+	list = JSON.parse(list);
+	let name = list[ind];
+	localStorage.removeItem("localshot_"+name);
+	list.splice(ind, 2);
+	localStorage.setItem("___fileIndex", JSON.stringify(list));
+};
+
+function openExport(LS) {
 	if (!shtObject) return error("Can't export a file before loading it");
+	exportLS = LS;
 	editorWindow({
 		header: "Export",
 		content: $export,
 		width: 275
 	});
+};
+
+function exportToLS(arr, name, ver) {
+	let str = "";
+	for (let i=0; i<arr.length; i++) {
+		let hex = arr[i].toString(16);
+		if (hex.length == 1) hex = "0" + hex;
+		str += hex;
+	};
+	let list = localStorage.getItem("___fileIndex");
+	if (list == null) list = [];
+	else list = JSON.parse(list);
+
+	if (list.indexOf(name) > -1) {
+		if (!confirm("There's already a file with this name saved in the browser storage. Do you want to overwrite it?")) return;
+		list.splice(list.indexOf(name), 2);
+	};
+
+	localStorage.setItem("localshot_"+name, str);
+	list.push(name, ver);
+	localStorage.setItem("___fileIndex", JSON.stringify(list));
 };
 
 function loadTest() {

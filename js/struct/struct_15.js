@@ -1,5 +1,6 @@
 window.struct_15 = {
 	ver: 14,
+	editorVer: "15",
 	main: [
 		"unknown_head", "int16",
 		"sht_off_cnt", "int16",

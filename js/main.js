@@ -1,6 +1,6 @@
-let version = "1.4a";
-let changelog = ["SA support", "MoF support"];
-let $fileinfo, $console, $logs, $evalInput, $radDeg, $radInput, $degInput, $filetree, $container, $tip, $open, $ver, $verOut, $filename, $export, $log ,currentStruct, saveByteArray;
+let version = "1.5a";
+let changelog = ["clipboard"];
+let $fileinfo, $console, $logs, $evalInput, $radDeg, $radInput, $degInput, $filetree, $container, $tip, $open, $ver, $verOut, $filename, $export, $log, $clipboard, currentStruct, saveByteArray;
 
 function getStruct($sel) {
 	switch ($sel.value) {
@@ -40,6 +40,7 @@ function getStruct($sel) {
 window.onload = () => {
 	$toolbar = document.querySelector(".toolbar");
 	$fileinfo = document.querySelector(".file-info");
+	$clipboard = document.querySelector(".clipboard-content");
 
 	$console = document.querySelector(".console");
 	$log = $console.querySelector(".log");

@@ -14,6 +14,8 @@ let activeTable = [false];
 
 let shtObject = null;
 
+let clipboard = [];
+
 function getTemplate(classname) {
 	let temp = document.querySelector("."+classname+".template").cloneNode(true);
 	temp.classList.remove("template");
@@ -206,27 +208,27 @@ function onInput(e) {
 function tableInput($targ, val, type, stat) {
 	switch(type) {
 		case "byte":
-			if (isNaN(val)) $targ.value = getLastValid(activeTable[0], activeTable[1], activeTable[2], stat);
+			if (isNaN(val)) $targ.value = getLastValid(activeTable[0], stat, activeTable[1], activeTable[2]);
 			if (val < 0) $targ.value = 0;
 			if (val > 255) $targ.value = 255;
 		break;
 		case "int16":
-			if (isNaN(val) && val != "-") $targ.value = getLastValid(activeTable[0], activeTable[1], activeTable[2], stat);
+			if (isNaN(val) && val != "-") $targ.value = getLastValid(activeTable[0], stat, activeTable[1], activeTable[2]);
 			if (val < -32768) $targ.value = -32768;
 			if (val > 32767) $targ.value = 32767;
 		break;
 		case "int32":
-			if (isNaN(val) && val != "-") $targ.value = getLastValid(activeTable[0], activeTable[1], activeTable[2], stat);
+			if (isNaN(val) && val != "-") $targ.value = getLastValid(activeTable[0], stat, activeTable[1], activeTable[2]);
 			if (val < -2147483648) $targ.value = -2147483648;
 			if (val > 2147483647) $targ.value = 2147483647;
 		break;
 		case "uint32":
-			if (isNaN(val)) $targ.value = getLastValid(activeTable[0], activeTable[1], activeTable[2], stat);
+			if (isNaN(val)) $targ.value = getLastValid(activeTable[0], stat, activeTable[1], activeTable[2]);
 			if (val < 0) $targ.value = 0;
 			if (val > 4294967295) $targ.value = 4294967295; 
 		break;
 		case "float":
-			if (isNaN(val) && val != "-") $targ.value = getLastValid(activeTable[0], activeTable[1], activeTable[2], stat);
+			if (isNaN(val) && val != "-") $targ.value = getLastValid(activeTable[0], stat, activeTable[1], activeTable[2]);
 		break;
 	};
 
@@ -314,25 +316,25 @@ function generateFileTree(regen) {
 	html += "<div data-tree='sht_arr_unfocused' class='filetree-entry expandable hidden'>";
 		html += "<div onclick='expandTree(this)' class='expandable-text'>sht_arr_unfocused</div>";
 		for (let i=0; i<tables.sht_arr.unfocused.length; i++) {
-			html += "<div data-tree='unfocused-"+i+"' class='expandable-option'><span onclick='loadTable(\"sht_arr\", \"unfocused\", "+i+", this)'>"+i+" power</span> <span onclick='removeShooterset(\"unfocused\", "+i+")'>(remove)</span></div>";
+			html += "<div data-tree='unfocused-"+i+"' class='expandable-option'><span onclick='loadTable(\"sht_arr\", \"unfocused\", "+i+", this)'>"+i+" power</span> <span onclick='removeShooterset(\"unfocused\", "+i+")'>(del)</span> <span onclick='copyShooterset(\"unfocused\", "+i+")'>(copy)</span></div>";
 		};
-		html += "<div onclick='addShooterset(\"unfocused\")' class='expandable-option'><span>Add new</span></div>";
+		html += "<div class='expandable-option' onclick='addShooterset(\"unfocused\")'><span>Add new</span></div>";
 	html += "</div>";
 
 	html += "<div data-tree='sht_arr_focused' class='filetree-entry expandable hidden'>";
 		html += "<div onclick='expandTree(this)'class='expandable-text'>sht_arr_focused</div>";
 		for (let i=0; i<tables.sht_arr.focused.length; i++) {
-			html += "<div data-tree='focused-"+i+"' class='expandable-option'><span onclick='loadTable(\"sht_arr\", \"focused\", "+i+", this)'>"+i+" power</span> <span onclick='removeShooterset(\"focused\", "+i+")'>(remove)</span></div>";
+			html += "<div data-tree='focused-"+i+"' class='expandable-option'><span onclick='loadTable(\"sht_arr\", \"focused\", "+i+", this)'>"+i+" power</span> <span onclick='removeShooterset(\"focused\", "+i+")'>(del)</span> <span onclick='copyShooterset(\"focused\", "+i+")'>(copy)</span></div>";
 		};
-		html += "<div onclick='addShooterset(\"focused\")' class='expandable-option'><span>Add new</span></div>";
+		html += "<div class='expandable-option' onclick='addShooterset(\"focused\")'><span>Add new</span></div>";
 	html += "</div>";
 
 	html += "<div data-tree='sht_arr_extra' class='filetree-entry expandable hidden'>";
 		html += "<div onclick='expandTree(this)' class='expandable-text'>sht_arr_extra</div>";
 		for (let i=0; i<tables.sht_arr.extra.length; i++) {
-			html += "<div data-tree='extra-"+i+"' class='expandable-option'><span onclick='loadTable(\"sht_arr\", \"extra\", "+i+", this)'>extra "+i+"</span> <span onclick='removeShooterset(\"extra\", "+i+")'>(remove)</span></div>";
+			html += "<div data-tree='extra-"+i+"' class='expandable-option'><span onclick='loadTable(\"sht_arr\", \"extra\", "+i+", this)'>extra "+i+"</span> <span onclick='removeShooterset(\"extra\", "+i+")'>(del)</span> <span onclick='copyShooterset(\"extra\", "+i+")'>(copy)</span></div>";
 		};
-		html += "<div onclick='addShooterset(\"extra\")' class='expandable-option'><span>Add new</span></div>";
+		html += "<div class='expandable-option' onclick='addShooterset(\"extra\")'><span>Add new</span></div>";
 	html += "</div>";
 
 	let $els;
@@ -490,13 +492,27 @@ function generateShootArrayTable(data, struct) {
 				$wrap.innerHTML = html;
 				tables.sht_arr[foc][pow].push($wrap);
 			};
+
+			let $btts = document.createElement("div");
+			$btts.style.width = "100%";
+			$btts.style.float = "left";
+
 			let $btt = document.createElement("button");
-			$btt.style.width = "100%";
+			$btt.style.width = "50%";
 			$btt.style.height = "50px";
 			$btt.style.fontSize = "20px";
+
+			let $btt2 = $btt.cloneNode();
+
 			$btt.innerHTML = "Add a new shooter";
 			$btt.addEventListener("click", addShooter);
-			tables.sht_arr[foc][pow].push($btt);
+
+			$btt2.innerHTML = "Paste shooter(s)";
+			$btt2.addEventListener("click", pasteShooter);
+
+			$btts.appendChild($btt);
+			$btts.appendChild($btt2);
+			tables.sht_arr[foc][pow].push($btts);
 		};
 	};
 };
@@ -504,7 +520,8 @@ function generateShootArrayTable(data, struct) {
 function generateOneShooterTable(shooter, shtstruct, flags_len, foc, pow, i) {
 	let html = "";
 	html += "<i>shooter "+i+"</i>";
-	html += "<button style='width: 100%' onclick='removeShooter("+i+", this)'>remove shooter</button>";
+	html += "<button style='width: 50%' onclick='removeShooter("+i+", this)'>remove shooter</button>";
+	html += "<button style='width: 50%' onclick='copyShooter("+i+")'>copy shooter</button>";
 	html += "<table>";
 	html += "<tr><th>stat</th><th>value</th></tr>";
 	for (let j=0; j<shtstruct.length; j+=2) {
@@ -533,7 +550,7 @@ function generateOneShooterTable(shooter, shtstruct, flags_len, foc, pow, i) {
 	return html;
 };
 
-function addShooter() {
+function addShooter(sht) {
 	let shooter = generateEmptyShooterFromStruct(currentStruct);
 	let [table, foc, pow] = activeTable;
 	let arr = shtObject.sht_arr[foc][pow];
@@ -589,4 +606,39 @@ function removeShooterset(foc, i) {
 	};
 	generateShootArrayTable(shtObject, currentStruct);
 	generateFileTree(true);
+};
+
+function updateClipboardInfo(txt) {
+	$clipboard.innerText = txt;
+};
+
+function cloneObject(obj) {
+	let ret = Array.isArray(obj) ? [] : {};
+	for (let key in obj) ret[key] = typeof obj[key] == "object" ? cloneObject(obj[key]) : obj[key];
+	return ret;
+};
+
+function copyShooter(i) {
+	let [table, foc, pow] = activeTable;
+	let arr = shtObject.sht_arr[foc][pow];
+	let shooter = arr[i];
+	let clone = cloneObject(shooter);
+	clipboard = [clone];
+	updateClipboardInfo("1 shooter from "+foc+"_"+pow+"_"+i);
+};
+
+function pasteShooter() {
+	let [table, foc, pow] = activeTable;
+	let arr = shtObject.sht_arr[foc][pow];
+	for (let i=0; i<clipboard.length; i++) arr.push(clipboard[i]);
+
+	// regenerate tables
+	generateShootArrayTable(shtObject, currentStruct);
+	reloadCurrentEditor();
+};
+
+function copyShooterset(foc, pow) {
+	let arr = shtObject.sht_arr[foc][pow];
+	clipboard = cloneObject(arr);
+	updateClipboardInfo(arr.length + " shooter(s) from "+foc+"_"+pow);
 };

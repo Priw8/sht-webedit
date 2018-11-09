@@ -150,7 +150,7 @@ function populateOpenLSsel() {
 };
 
 function loadLS() {
-	let ind = $openLSsel.value - 1; // ind=-1 is the bundled sanae
+	let ind = ($openLSsel.value - 1)*2; // ind=-1 is the bundled sanae
 	if (ind == -1) {
 		currentStruct = window.struct_15;
 		readSht(window._testshot, window.struct_15);
@@ -742,7 +742,10 @@ function copyShooter(i) {
 function pasteShooter() {
 	let [table, foc, pow] = activeTable;
 	let arr = shtObject.sht_arr[foc][pow];
-	for (let i=0; i<clipboard.length; i++) arr.push(clipboard[i]);
+	for (let i=0; i<clipboard.length; i++) {
+		let sht = cloneObject(clipboard[i]);
+		arr.push(sht);
+	};
 
 	// regenerate tables
 	generateShootArrayTable(shtObject, currentStruct);

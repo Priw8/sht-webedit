@@ -1,4 +1,4 @@
-let version = "1.6a";
+let version = "1.6b";
 let changelog = ["saving and loading from browser storage"];
 let $fileinfo, $console, $logs, $evalInput, $radDeg, $radInput, $degInput, $filetree, $container, $tip, $open, $ver, 
 	$verOut, $filename, $export, $log, $clipboard, $openLS, $openLSsel, currentStruct, saveByteArray;

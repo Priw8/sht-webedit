@@ -150,8 +150,8 @@ function populateOpenLSsel() {
 };
 
 function loadLS() {
-	let ind = ($openLSsel.value - 1)*2; // ind=-1 is the bundled sanae
-	if (ind == -1) {
+	let ind = ($openLSsel.value - 1)*2; // ind=-2 is the bundled sanae
+	if (ind == -2) {
 		currentStruct = window.struct_15;
 		readSht(window._testshot, window.struct_15);
 		setFileInfo("LoLK Sanae.sht");
@@ -192,14 +192,15 @@ function readLSfile(file) {
 };
 
 function deleteFromLS(ind) {
-	if (typeof ind == "undefined") ind = $openLSsel.value - 1;
-	if (ind == -1) return cAlert("You can't delete the budled .sht<br>It's not actually stored in the browser storage anyway.");
+	if (typeof ind == "undefined") ind = ($openLSsel.value - 1)*2;
+	if (ind == -2) return cAlert("You can't delete the budled .sht<br>It's not actually stored in the browser storage anyway.");
 	let list = localStorage.getItem("___fileIndex");
 	list = JSON.parse(list);
 	let name = list[ind];
 	localStorage.removeItem("localshot_"+name);
 	list.splice(ind, 2);
 	localStorage.setItem("___fileIndex", JSON.stringify(list));
+	populateOpenLSsel();
 };
 
 function openExport(LS) {

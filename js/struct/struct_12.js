@@ -13,7 +13,7 @@ window.struct_12 = {
 		"move_f_dia", "float",
 		"pwr_lvl_cnt", "int16",
 		"max_dmg_u", "int16",
-		"unknown_0", "int32",
+		"SA_power_divisor", "int32",
 		"option_pos", "option_pos",
 		"sht_off", "sht_off",
 		"sht_arr", "sht_arr"
@@ -40,7 +40,7 @@ window.struct_12 = {
 		"unknown_sht_byte_0", "byte",
 		"anm", "int16",
 		"anm_hit", "int16",
-		"unknown_sht_int16", "int16",
+		"sfx_id", "int16",
 		"flags", "flags"
 	],
 	sht_off_type: "abs",

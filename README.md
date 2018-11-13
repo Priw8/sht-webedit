@@ -34,6 +34,8 @@ Basically there's a header (the "main" table) which stores the basic information
 - sht\_off\_cnt: length of the shooter offset array
 - move\_nf/f\_str/dia - unfocused/focused speed when moving straight/diagonally
 - pwr\_lvl\_cnt - max power level
+- SA_power_divisor - only for SA, unused in other games. Sets how much power one poweritem gives. Basically power per item = 100/SA_power_divisor
+- max_dmg - max damage dealt to a given entity during a single frame. Also applies to bombs.
 
 **option_pos table**
 
@@ -58,4 +60,5 @@ shooter tables
 - option - option to which the shooter is assigned. 0 = player
 - anm - anm script of the bullet
 - anm_hit - anm script when the bullet hits something
+- sfx_id - sound id to play when the shooter fires a bullet
 - flags - they do a variety of things, such as making the bullets homing, giving them splash damage etc. (documentation is yet to be made). Note that their behaviour may differ even if the .sht format is the same version (e.g. DDC and LoLK flags do different things)

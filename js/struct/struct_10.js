@@ -38,7 +38,7 @@ window.struct_10 = {
 		"unknown_sht_byte_0", "byte",
 		"anm", "int16",
 		"anm_hit", "int16",
-		"unknown_sht_int16", "int16",
+		"sfx_id", "int16",
 		"flags", "flags"
 	],
 	sht_off_type: "abs",

@@ -54,5 +54,6 @@ window.struct_15 = {
 	max_opt: 0x04,
 	flags_len: 0x32,
 	type: "maingame",
-	forced_shtoffarr_len: 0x0A
+	forced_shtoffarr_len: 0x0A,
+	f_uf_shooter_split: true
 };

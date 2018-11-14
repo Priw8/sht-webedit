@@ -54,5 +54,6 @@ window.struct_16_sub = {
 	max_opt: 0x06,
 	flags_len: 0x32,
 	type: "photogame", // it works like one
-	forced_shtoffarr_len: 0x0A
+	forced_shtoffarr_len: 0x0A,
+	f_uf_shooter_split: true
 };

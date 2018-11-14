@@ -71,11 +71,13 @@ function readSht(arr, struct) {
 			break;
 			case "sht_off":
 				len = data.sht_off_cnt*4;
-				val = readShtOff(arr, offset, data.sht_off_cnt, struct);
+				let {off, powers} = readShtOff(arr, offset, data.sht_off_cnt, struct);
+				val = off;
+				data.powers = powers;
 			break;
 			case "sht_arr":
 				len = 99999999999999999999999;
-				val = readShtArr(arr, offset, data.sht_off, struct.sht_arr, struct.flags_len, data.pwr_lvl_cnt, struct.sht_off_type);
+				val = readShtArr(arr, offset, data.sht_off, struct.sht_arr, struct.flags_len, data.pwr_lvl_cnt, struct.sht_off_type, data.powers);
 			break;
 			default:
 				throw "unknown datatype - "+type;
@@ -88,23 +90,27 @@ function readSht(arr, struct) {
 	generateEditorTable(data, struct);
 };
 
-function readShtArr(arr, offset, sht_off, struct, flags_len, pwr_lvl_cnt, off_type) {
+function readShtArr(arr, offset, sht_off, struct, flags_len, pwr_lvl_cnt, off_type, powers) {
 	let shooters = {
 		unfocused: [],
 		focused: [],
-		extra: [] // trance in TD is a separate shooterset
+		extra: [], // trance in TD is a separate shooterset
+		main: [] // for old games (<TH10) which don't have shootersets split between focus/unfocus
 	};
 	for (let i=0; i<sht_off.length; i++){
 		let foc;
-		if (currentStruct.type == "maingame") {
+		if (currentStruct.type == "maingame" && currentStruct.f_uf_shooter_split) {
 			foc = i >= (pwr_lvl_cnt+1) ? "focused" : "unfocused";	
 			if (i >= (pwr_lvl_cnt+1)*2) foc = "extra";
-		} else {
+		} else if (currentStruct.f_uf_shooter_split) {
 			// photogames are weird
 			foc = "extra";
+		} else {
+			foc = "main";
 		};
 		let off = off_type == "rel" ? offset + sht_off[i] : sht_off[i];
 		let val = readOneSht(arr, off, struct, flags_len, i);
+		if (powers[i]) val.power = powers[i];
 		shooters[foc].push(val);
 	};
 	return shooters;
@@ -168,17 +174,24 @@ function readOneSht(arr, offset, struct, flags_len, pow) {
 
 function readShtOff(arr, offset, cnt, struct) {
 	let off = [];
+	let pow = [];
 	let off_struct = struct.sht_off;
 	for (let i=0; i<cnt; i++) {
 		for (let j=0; j<off_struct.length; j+=2) {
 			if (off_struct[j] == "offset") {
 				let val = readUint32(arr[offset+3], arr[offset+2], arr[offset+1], arr[offset]);
 				off.push(val);
+			} else if (off_struct[j] == "power") {
+				let val = readUint32(arr[offset+3], arr[offset+2], arr[offset+1], arr[offset]);
+				pow.push(val);
 			};
 			offset += 4;
 		};
 	};
-	return off;
+	return {
+		off: off,
+		powers: pow
+	};
 };
 
 function readOptionPos(arr, offset, max_opt, ver) {

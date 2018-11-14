@@ -297,8 +297,12 @@ function doEval() {
 function getLastValid(table, stat, foc, pow) {
 	try {
 		if (table == "sht_arr") {
-			let [i, rstat, flagno] = stat.split("-");
-			if (rstat != "flag") return shtObject[table][foc][pow][i][rstat];
+			if (stat != "power") {
+				let [i, rstat, flagno] = stat.split("-");
+				if (rstat != "flag") return shtObject[table][foc][pow][i][rstat];
+			} else {
+				return shtObject[table][foc][pow].power;
+			};
 			return shtObject[table][foc][pow][i].flags[flagno]
 		} else if (table == "main") {
 			return shtObject[stat];
@@ -351,9 +355,13 @@ function tableInput($targ, val, type, stat) {
 function updateData(val, stat) {
 	let table = activeTable[0], foc = activeTable[1], pow = activeTable[2];
 	if (table == "sht_arr") {
-		let [i, rstat, flagno] = stat.split("-");
-		if (rstat != "flag") shtObject[table][foc][pow][i][rstat] = val;
-		else shtObject[table][foc][pow][i].flags[flagno] = val;
+		if (stat != "power") {
+			let [i, rstat, flagno] = stat.split("-");
+			if (rstat != "flag") shtObject[table][foc][pow][i][rstat] = val;
+			else shtObject[table][foc][pow][i].flags[flagno] = val;
+		} else {
+			shtObject[table][foc][pow].power = val;
+		};
 	} else if (table == "main") {
 		shtObject[stat] = val;
 	} else if (table == "option_pos") {
@@ -423,32 +431,42 @@ function generateFileTree(regen) {
 	let html = "";
 
 	html += "<div data-tree='main' onclick='loadTable(\"main\", false, false, this)' class='filetree-entry'>main</div>";
-	html += "<div data-tree='option_pos' onclick='loadTable(\"option_pos\", false, false, this)' class='filetree-entry'>option_pos</div>";
+	if (currentStruct.option_pos_len) html += "<div data-tree='option_pos' onclick='loadTable(\"option_pos\", false, false, this)' class='filetree-entry'>option_pos</div>";
 	html += "<div data-tree='sht_off' onclick='loadTable(\"sht_off\", false, false, this)' class='filetree-entry'>sht_off</div>";
 
-	html += "<div data-tree='sht_arr_unfocused' class='filetree-entry expandable hidden'>";
-		html += "<div onclick='expandTree(this)' class='expandable-text'>sht_arr_unfocused</div>";
-		for (let i=0; i<tables.sht_arr.unfocused.length; i++) {
-			html += "<div data-tree='unfocused-"+i+"' class='expandable-option'><span onclick='loadTable(\"sht_arr\", \"unfocused\", "+i+", this)'>"+i+" power</span> <span onclick='removeShooterset(\"unfocused\", "+i+")'>(del)</span> <span onclick='copyShooterset(\"unfocused\", "+i+")'>(copy)</span></div>";
-		};
-		html += "<div class='expandable-option' onclick='addShooterset(\"unfocused\")'><span>Add new</span></div>";
-	html += "</div>";
+	if (currentStruct.f_uf_shooter_split) {
+		html += "<div data-tree='sht_arr_unfocused' class='filetree-entry expandable hidden'>";
+			html += "<div onclick='expandTree(this)' class='expandable-text'>sht_arr_unfocused</div>";
+			for (let i=0; i<tables.sht_arr.unfocused.length; i++) {
+				html += "<div data-tree='unfocused-"+i+"' class='expandable-option'><span onclick='loadTable(\"sht_arr\", \"unfocused\", "+i+", this)'>"+i+" power</span> <span onclick='removeShooterset(\"unfocused\", "+i+")'>(del)</span> <span onclick='copyShooterset(\"unfocused\", "+i+")'>(copy)</span></div>";
+			};
+			html += "<div class='expandable-option' onclick='addShooterset(\"unfocused\")'><span>Add new</span></div>";
+		html += "</div>";
 
-	html += "<div data-tree='sht_arr_focused' class='filetree-entry expandable hidden'>";
-		html += "<div onclick='expandTree(this)'class='expandable-text'>sht_arr_focused</div>";
-		for (let i=0; i<tables.sht_arr.focused.length; i++) {
-			html += "<div data-tree='focused-"+i+"' class='expandable-option'><span onclick='loadTable(\"sht_arr\", \"focused\", "+i+", this)'>"+i+" power</span> <span onclick='removeShooterset(\"focused\", "+i+")'>(del)</span> <span onclick='copyShooterset(\"focused\", "+i+")'>(copy)</span></div>";
-		};
-		html += "<div class='expandable-option' onclick='addShooterset(\"focused\")'><span>Add new</span></div>";
-	html += "</div>";
+		html += "<div data-tree='sht_arr_focused' class='filetree-entry expandable hidden'>";
+			html += "<div onclick='expandTree(this)'class='expandable-text'>sht_arr_focused</div>";
+			for (let i=0; i<tables.sht_arr.focused.length; i++) {
+				html += "<div data-tree='focused-"+i+"' class='expandable-option'><span onclick='loadTable(\"sht_arr\", \"focused\", "+i+", this)'>"+i+" power</span> <span onclick='removeShooterset(\"focused\", "+i+")'>(del)</span> <span onclick='copyShooterset(\"focused\", "+i+")'>(copy)</span></div>";
+			};
+			html += "<div class='expandable-option' onclick='addShooterset(\"focused\")'><span>Add new</span></div>";
+		html += "</div>";
 
-	html += "<div data-tree='sht_arr_extra' class='filetree-entry expandable hidden'>";
-		html += "<div onclick='expandTree(this)' class='expandable-text'>sht_arr_extra</div>";
-		for (let i=0; i<tables.sht_arr.extra.length; i++) {
-			html += "<div data-tree='extra-"+i+"' class='expandable-option'><span onclick='loadTable(\"sht_arr\", \"extra\", "+i+", this)'>extra "+i+"</span> <span onclick='removeShooterset(\"extra\", "+i+")'>(del)</span> <span onclick='copyShooterset(\"extra\", "+i+")'>(copy)</span></div>";
-		};
-		html += "<div class='expandable-option' onclick='addShooterset(\"extra\")'><span>Add new</span></div>";
-	html += "</div>";
+		html += "<div data-tree='sht_arr_extra' class='filetree-entry expandable hidden'>";
+			html += "<div onclick='expandTree(this)' class='expandable-text'>sht_arr_extra</div>";
+			for (let i=0; i<tables.sht_arr.extra.length; i++) {
+				html += "<div data-tree='extra-"+i+"' class='expandable-option'><span onclick='loadTable(\"sht_arr\", \"extra\", "+i+", this)'>extra "+i+"</span> <span onclick='removeShooterset(\"extra\", "+i+")'>(del)</span> <span onclick='copyShooterset(\"extra\", "+i+")'>(copy)</span></div>";
+			};
+			html += "<div class='expandable-option' onclick='addShooterset(\"extra\")'><span>Add new</span></div>";
+		html += "</div>";
+	} else {
+		html += "<div data-tree='sht_arr_main' class='filetree-entry expandable hidden'>";
+			html += "<div onclick='expandTree(this)' class='expandable-text'>sht_arr_main</div>";
+			for (let i=0; i<tables.sht_arr.main.length; i++) {
+				html += "<div data-tree='main-"+i+"' class='expandable-option'><span onclick='loadTable(\"sht_arr\", \"main\", "+i+", this)'>"+i+" power</span> <span onclick='removeShooterset(\"main\", "+i+")'>(del)</span> <span onclick='copyShooterset(\"main\", "+i+")'>(copy)</span></div>";
+			};
+			html += "<div class='expandable-option' onclick='addShooterset(\"main\")'><span>Add new</span></div>";
+		html += "</div>";
+	};
 
 	let $els;
 	if (regen) $els = document.querySelectorAll("[data-tree]");
@@ -496,6 +514,7 @@ function reloadCurrentEditor() {
 };
 
 function generateEditorTable(data, struct) {
+	shtObject = data;
 	$active = null;
 	tables.active = null;
 	$container.innerHTML = "";
@@ -533,7 +552,6 @@ function generateEditorTable(data, struct) {
 };
 
 function generateOptionPosTable(data, struct) {
-	shtObject = data;
 	log("generate option_pos table");
 	let html = "";
 	for (let focused=0; focused<2; focused++) {
@@ -589,9 +607,11 @@ function generateShootArrayTable(data, struct) {
 	let shtstruct = struct.sht_arr;
 	for (let focused=0; focused<3; focused++) {
 		let foc;
-		if (focused == 0) foc = "unfocused";
-		else if (focused == 1) foc = "focused";
-		else foc = "extra";
+		if (currentStruct.f_uf_shooter_split) {
+			if (focused == 0) foc = "unfocused";
+			else if (focused == 1) foc = "focused";
+			else foc = "extra";
+		} else foc = "main";
 		let arr = data.sht_arr[foc];
 		tables.sht_arr[foc] = [];
 		for (let pow=0; pow<arr.length; pow++) {
@@ -610,6 +630,13 @@ function generateShootArrayTable(data, struct) {
 			$btts.style.width = "100%";
 			$btts.style.float = "left";
 
+			if (shooters.power) { // power to switch to next shooterset at (<TH10)
+				let $div = document.createElement("div");
+				$div.style.width = "100%";
+				$div.innerHTML = "Power to switch to next shooterset at: <input value='"+shooters.power+"' data-type='uint32' data-stat='power'>";
+				$btts.appendChild($div);
+			};
+
 			let $btt = document.createElement("button");
 			$btt.style.width = "50%";
 			$btt.style.height = "50px";
@@ -625,6 +652,7 @@ function generateShootArrayTable(data, struct) {
 
 			$btts.appendChild($btt);
 			$btts.appendChild($btt2);
+
 			tables.sht_arr[foc][pow].push($btts);
 		};
 	};

@@ -1,11 +1,14 @@
-let version = "1.6b";
-let changelog = ["saving and loading from browser storage"];
+let version = "1.7";
+let changelog = ["experimental support for IN"];
 let $fileinfo, $console, $logs, $evalInput, $radDeg, $radInput, $degInput, $filetree, $container, $tip, $open, $ver, 
 	$verOut, $filename, $export, $log, $clipboard, $openLS, $openLSsel, currentStruct, saveByteArray;
 
 function getStruct($sel, raw) {
 	let val = raw ? $sel : $sel.value;
 	switch (val) {
+		case "08":
+			return window.struct_08;
+		break;
 		case "10":
 			return window.struct_10;
 		break;
@@ -29,7 +32,7 @@ function getStruct($sel, raw) {
 		case "16":
 			return window.struct_16;
 		break;
-		case "16.5": //actually ca be loaded in the same way I guess
+		case "16.5": //actually can be loaded in the same way I guess
 		case "16-sub":
 			return window.struct_16_sub;
 		break;

@@ -32,13 +32,15 @@ function validateExport(data, struct) {
 	//ingore for photogames since their .shts are janky
 	if (struct.type == "maingame") {
 		let len = data.pwr_lvl_cnt + 1;
-		if (data.sht_arr.focused.length != len) throw "bad amount of focused shootersets (should be "+len+")";
-		if (data.sht_arr.unfocused.length != len) throw "bad amount of unfocused shootersets (should be "+len+")";
+		if (struct.f_uf_shooter_split) {
+			if (data.sht_arr.focused.length != len) throw "bad amount of focused shootersets (should be "+len+")";
+			if (data.sht_arr.unfocused.length != len) throw "bad amount of unfocused shootersets (should be "+len+")";
+		};
 	};
 
 	//check if sht_off_cnt equals the amount of shootersets
 	let cnt = data.sht_off_cnt;
-	let sum = data.sht_arr.unfocused.length + data.sht_arr.focused.length + data.sht_arr.extra.length;
+	let sum = data.sht_arr.unfocused.length + data.sht_arr.focused.length + data.sht_arr.extra.length +  data.sht_arr.main.length;
 	if (cnt != sum) throw "bad sht_off_cnt (should be "+sum+")";
 
 	//ZUN's parser is jank and expects shooterset array offset to be static, so some games have forced shtoffarr lengths
@@ -84,7 +86,7 @@ function getExportArr(struct) {
 				// these values will be later updated
 			break;
 			case "sht_arr":
-				let {push, offsets} = getExportShtArr(struct);
+				let {push, offsets, powers} = getExportShtArr(struct);
 				arr.push.apply(arr, push);
 				if (offsets.length != getLastValid("main", "sht_off_cnt")) throw "shoot offset count mismatch (should be "+offsets.length+")";
 				let entrysize = struct.ver > 12 ? 4 : 8;
@@ -95,17 +97,24 @@ function getExportArr(struct) {
 						arr[sht_off_off + j*entrysize + k] = bytes[k];
 					};
 					if (entrysize == 8) {
-						if (j == 0 || j == offsets.length/2) {
-							arr[sht_off_off + j*entrysize + 4] = 0x08;
-							arr[sht_off_off + j*entrysize + 5] = 0x00;
-							arr[sht_off_off + j*entrysize + 6] = 0x00;
-							arr[sht_off_off + j*entrysize + 7] = 0x00;
-						} else {
-							arr[sht_off_off + j*entrysize + 4] = 0xE7;
-							arr[sht_off_off + j*entrysize + 5] = 0x03;
-							arr[sht_off_off + j*entrysize + 6] = 0x00;
-							arr[sht_off_off + j*entrysize + 7] = 0x00;
-							//int32=999
+						if (struct.f_uf_shooter_split) { // MoF - UFO
+							if (j == 0 || j == offsets.length/2) {
+								arr[sht_off_off + j*entrysize + 4] = 0x08;
+								arr[sht_off_off + j*entrysize + 5] = 0x00;
+								arr[sht_off_off + j*entrysize + 6] = 0x00;
+								arr[sht_off_off + j*entrysize + 7] = 0x00;
+							} else {
+								arr[sht_off_off + j*entrysize + 4] = 0xE7;
+								arr[sht_off_off + j*entrysize + 5] = 0x03;
+								arr[sht_off_off + j*entrysize + 6] = 0x00;
+								arr[sht_off_off + j*entrysize + 7] = 0x00;
+								//int32=999
+							};
+						} else { // <MoF
+							let bytes = uint32ToBytes(powers[j]).reverse();
+							for (let k=0; k<4; k++) {
+								arr[sht_off_off + j*entrysize + k + 4] = bytes[k];
+							};
 						};
 					};
 				};
@@ -119,22 +128,38 @@ function getExportArr(struct) {
 function getExportShtArr(struct) {
 	let arr = [];
 	let offsets = [];
+	let powers = []; // for <TH10
 	let pwr_lvl_cnt = getLastValid("main", "pwr_lvl_cnt");
 
 	// photogames only have extra shootersets
+	debugger;
 	if (struct.type == "maingame") {
-		for (let focused=0; focused<2; focused++) {
-			let foc = focused ? "focused" : "unfocused";
-			for (let pow=0; pow<=pwr_lvl_cnt; pow++) {
-				offsets.push(arr.length);
-				let shooterset = shtObject.sht_arr[foc][pow];
-				if (shooterset) {
-					for (let i=0; i<shooterset.length; i++) {
-						let shooter = getExportOneShooter(struct, foc, pow, i);
-						if (!shooter) break;
-						arr.push.apply(arr, shooter);
+		if (struct.f_uf_shooter_split) {
+			for (let focused=0; focused<2; focused++) {
+				let foc = focused ? "focused" : "unfocused";
+				for (let pow=0; pow<=pwr_lvl_cnt; pow++) {
+					offsets.push(arr.length);
+					let shooterset = shtObject.sht_arr[foc][pow];
+					if (shooterset) {
+						for (let i=0; i<shooterset.length; i++) {
+							let shooter = getExportOneShooter(struct, foc, pow, i);
+							if (!shooter) break;
+							arr.push.apply(arr, shooter);
+						};
 					};
+					arr.push(255, 255, 255, 255);
 				};
+			};
+		} else {
+			let sht_off_cnt = getLastValid("main", "sht_off_cnt");
+			for (let pow=0; pow<sht_off_cnt; pow++) {
+				offsets.push(arr.length);
+				let shooterset = shtObject.sht_arr.main[pow];
+				for (let i=0; i<shooterset.length; i++) {
+					let shooter = getExportOneShooter(struct, "main", pow, i);
+					arr.push.apply(arr, shooter);
+				};
+				powers.push(shooterset.power);
 				arr.push(255, 255, 255, 255);
 			};
 		};
@@ -154,7 +179,8 @@ function getExportShtArr(struct) {
 	};
 	return {
 		push: arr,
-		offsets: offsets
+		offsets: offsets,
+		powers: powers
 	};
 };
 

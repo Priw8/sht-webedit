@@ -48,5 +48,6 @@ window.struct_128 = {
 	max_opt: 0x08,
 	flags_len: 0x10,
 	type: "photogame", // can be loaded as one
-	forced_shtoffarr_len: false
+	forced_shtoffarr_len: false,
+	f_uf_shooter_split: true
 };

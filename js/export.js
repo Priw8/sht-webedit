@@ -32,9 +32,11 @@ function validateExport(data, struct) {
 	//ingore for photogames since their .shts are janky
 	if (struct.type == "maingame") {
 		let len = data.pwr_lvl_cnt + 1;
-		if (struct.f_uf_shooter_split) {
-			if (data.sht_arr.focused.length != len) throw "bad amount of focused shootersets (should be "+len+")";
-			if (data.sht_arr.unfocused.length != len) throw "bad amount of unfocused shootersets (should be "+len+")";
+		if (!isNaN(len)) {
+			if (struct.f_uf_shooter_split) {
+				if (data.sht_arr.focused.length != len) throw "bad amount of focused shootersets (should be "+len+")";
+				if (data.sht_arr.unfocused.length != len) throw "bad amount of unfocused shootersets (should be "+len+")";
+			};
 		};
 	};
 
@@ -55,7 +57,8 @@ function getExportArr(struct) {
 	let sht_off_off; //offset of shot array offsets
 	for (let i=0; i<main.length; i+=2) {
 		let prop = main[i], type = main[i+1];
-		let val = Number(getLastValid("main", prop));
+		let val = getLastValid("main", prop);
+		if (!val) val = getLastValid("main", prop+"_u"); // check if unused values exist (for converting from new to old)
 		switch(type) {
 			case "byte":
 				arr.push(val);
@@ -132,15 +135,14 @@ function getExportShtArr(struct) {
 	let pwr_lvl_cnt = getLastValid("main", "pwr_lvl_cnt");
 
 	// photogames only have extra shootersets
-	debugger;
 	if (struct.type == "maingame") {
 		if (struct.f_uf_shooter_split) {
 			for (let focused=0; focused<2; focused++) {
 				let foc = focused ? "focused" : "unfocused";
 				for (let pow=0; pow<=pwr_lvl_cnt; pow++) {
-					offsets.push(arr.length);
 					let shooterset = shtObject.sht_arr[foc][pow];
 					if (shooterset) {
+						offsets.push(arr.length);
 						for (let i=0; i<shooterset.length; i++) {
 							let shooter = getExportOneShooter(struct, foc, pow, i);
 							if (!shooter) break;
@@ -151,22 +153,31 @@ function getExportShtArr(struct) {
 				};
 			};
 		} else {
-			let sht_off_cnt = getLastValid("main", "sht_off_cnt");
-			for (let pow=0; pow<sht_off_cnt; pow++) {
-				offsets.push(arr.length);
-				let shooterset = shtObject.sht_arr.main[pow];
-				for (let i=0; i<shooterset.length; i++) {
-					let shooter = getExportOneShooter(struct, "main", pow, i);
-					arr.push.apply(arr, shooter);
+			// when exporting from new to old, don't delete shootersets by accident but put them all into main instead
+			let types = ["main", "unfocused", "focused", "extra"];
+			for (let type=0; type<4; type++) {
+				let shootersets = shtObject.sht_arr[types[type]];
+				for (let j=0; j<shootersets.length; j++) {
+					offsets.push(arr.length);
+					let shooterset = shootersets[j];
+					for (let i=0; i<shooterset.length; i++) {
+						let shooter = getExportOneShooter(struct, types[type], j, i);
+						arr.push.apply(arr, shooter);
+					};
+					powers.push(typeof shooterset.power != "undefined" ? shooterset.power : 999);
+					arr.push(255, 255, 255, 255);
 				};
-				powers.push(shooterset.power);
-				arr.push(255, 255, 255, 255);
 			};
 		};
 	};
 
 	// extra shootersets (such as trance in TD)
 	let extra = shtObject.sht_arr.extra;
+	let extraBak = cloneObject(shtObject.sht_arr.extra);
+	
+	// when converting from an older format, put 'main' shooters into extra so they don't get lost
+	if (struct.f_uf_shooter_split && shtObject.sht_arr.main.length) extra.push.apply(extra, shtObject.sht_arr.main);
+
 	for (let cnt=0; cnt<extra.length; cnt++) {
 		offsets.push(arr.length);
 		let shooterset = extra[cnt];
@@ -177,6 +188,9 @@ function getExportShtArr(struct) {
 		};
 		arr.push(255, 255, 255, 255);
 	};
+
+	shtObject.sht_arr.extra = extraBak;
+
 	return {
 		push: arr,
 		offsets: offsets,

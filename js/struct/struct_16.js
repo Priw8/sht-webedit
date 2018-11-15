@@ -4,9 +4,9 @@ window.struct_16 = {
 	main: [
 		"unknown_head", "int16",
 		"sht_off_cnt", "int16",
-		"hit_radius_u", "float",
-		"graze_radius_u", "float",
-		"item_radius_u", "float",
+		"hitbox_u", "float",
+		"grazebox_u", "float",
+		"itembox_u", "float",
 		"move_nf_str", "float",
 		"move_f_str", "float",
 		"move_nf_dia", "float",

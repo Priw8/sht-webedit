@@ -295,24 +295,27 @@ function doEval() {
 };
 
 function getLastValid(table, stat, foc, pow) {
+	let ret;
 	try {
 		if (table == "sht_arr") {
 			if (stat != "power") {
 				let [i, rstat, flagno] = stat.split("-");
-				if (rstat != "flag") return shtObject[table][foc][pow][i][rstat];
+				if (rstat != "flag") ret = shtObject[table][foc][pow][i][rstat];
+				else ret = shtObject[table][foc][pow][i].flags[flagno];
 			} else {
-				return shtObject[table][foc][pow].power;
+				ret = shtObject[table][foc][pow].power;
 			};
-			return shtObject[table][foc][pow][i].flags[flagno]
 		} else if (table == "main") {
-			return shtObject[stat];
+			ret = shtObject[stat];
 		} else if (table == "option_pos") {
 			let [foc, pow, i, coord] = stat.split("-");
-			return shtObject[table][foc][pow][i][coord];
+			ret = shtObject[table][foc][pow][i][coord];
 		};
 	} catch(e) {
 		return 0;
 	};
+	if (typeof ret == "undefined") ret = 0;
+	return ret;
 };
 
 function onInput(e) {

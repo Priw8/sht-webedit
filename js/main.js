@@ -6,6 +6,9 @@ let $fileinfo, $console, $logs, $evalInput, $radDeg, $radInput, $degInput, $file
 function getStruct($sel, raw) {
 	let val = raw ? $sel : $sel.value;
 	switch (val) {
+		case "07":
+			return window.struct_07;
+		break;
 		case "08":
 			return window.struct_08;
 		break;

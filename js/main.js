@@ -15,6 +15,9 @@ function getStruct($sel, raw) {
 		case "10":
 			return window.struct_10;
 		break;
+		case "alcostg":
+			return window.struct_alcostg;
+		break;
 		case "11":
 		case "12":
 			return window.struct_12;

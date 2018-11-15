@@ -101,7 +101,7 @@ function getExportArr(struct) {
 					};
 					if (entrysize == 8) {
 						if (struct.f_uf_shooter_split) { // MoF - UFO
-							if (j == 0 || j == offsets.length/2) {
+							if ((j == 0 || j == offsets.length/2) && struct.ver != 10.3) { //alcostg has to be different of course
 								arr[sht_off_off + j*entrysize + 4] = 0x08;
 								arr[sht_off_off + j*entrysize + 5] = 0x00;
 								arr[sht_off_off + j*entrysize + 6] = 0x00;
@@ -264,7 +264,7 @@ function getExportOptPos(struct) {
 				for (let k=0; k<4; k++) arr[j+k] = xBytes[k];
 				for (let k=4; k<8; k++) arr[j+k] = yBytes[k-4];
 				j+=8;
-				if (struct.ver == 10) { // janky game with some weirdass padding
+				if (struct.ver == 10 || struct.ver == 10.3) { // janky game with some weirdass padding
 					arr[j] = 0;
 					arr[j+1] = 0;
 					arr[j+2] = 0;

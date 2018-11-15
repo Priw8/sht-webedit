@@ -34,7 +34,7 @@ function readSht(arr, struct) {
 	let offset = 0;
 	let i = 0;
 	let data = {};
-	if (struct.ver == 10) data.pwr_lvl_cnt = 4; // janky format of a janky game
+	if (struct.ver == 10 || struct.ver == 10.3) data.pwr_lvl_cnt = 4; // janky format of a janky game
 
 	while(offset < arr.length) {
 		let prop = main[i], type = main[i+1];
@@ -210,7 +210,7 @@ function readOptionPos(arr, offset, max_opt, ver) {
 					y: y
 				});
 				offset += 8;
-				if (ver == 10) offset += 4;
+				if (ver == 10 || ver == 10.3) offset += 4;
 			};
 		};
 	};

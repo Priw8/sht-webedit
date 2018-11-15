@@ -2,6 +2,8 @@
 a tool for editing .sht files used in Touhou games - https://priw8.github.io/sht-webedit/
 
 ### Supported games
+- TH07 - Perfect Cherry Blossom
+- TH08 - Imperishable Night
 - TH10 - Mountain of Faith
 - TH11 - Subterranean Animism
 - TH12 - Undefined Fantastic Object
@@ -22,7 +24,7 @@ the tool will be updated with support for more games.
 - some tools to make life easier (console for evaluating js code, radians <-> degrees converer)
 
 ### TODO
-- support more games
+- find out what the unknown values do
 
 ### How .sht files work
 # TH10+

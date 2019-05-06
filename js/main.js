@@ -1,5 +1,5 @@
-let version = "1.7";
-let changelog = ["experimental support for IN"];
+let version = "1.8";
+let changelog = ["WBaWC demo support"];
 let $fileinfo, $console, $logs, $evalInput, $radDeg, $radInput, $degInput, $filetree, $container, $tip, $open, $ver, 
 	$verOut, $filename, $export, $log, $clipboard, $openLS, $openLSsel, currentStruct, saveByteArray;
 
@@ -41,6 +41,9 @@ function getStruct($sel, raw) {
 		case "16.5": //actually can be loaded in the same way I guess
 		case "16-sub":
 			return window.struct_16_sub;
+		break;
+		case "17tr":
+			return window.struct_17tr;
 		break;
 		default:
 			throw "unsupported version";

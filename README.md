@@ -14,6 +14,7 @@ a tool for editing .sht files used in Touhou games - https://priw8.github.io/sht
 - TH15 - Legacy of Lunatic Kingdom
 - TH16 - Hidden Star in Four Seasons
 - TH16.5 - Violet Detector
+- TH17 - Wily Beast and Weakest Creature (demo)
 - 黄昏酒場 ～ Uwabami Breakers (alcostg)
 
 the tool will be updated with support for more games.

@@ -1,5 +1,5 @@
-let version = "1.8";
-let changelog = ["WBaWC demo support"];
+let version = "1.9";
+let changelog = ["Exporting now works in firefox", "Better UI colors"];
 let $fileinfo, $console, $logs, $evalInput, $radDeg, $radInput, $degInput, $filetree, $container, $tip, $open, $ver, 
 	$verOut, $filename, $export, $log, $clipboard, $openLS, $openLSsel, currentStruct, saveByteArray;
 
@@ -89,7 +89,7 @@ window.onload = () => {
 				url = window.URL.createObjectURL(blob);
 			a.href = url;
 			a.download = name;
-			a.click();
+			a.dispatchEvent(new MouseEvent("click", {bubbles: true, cancelable: true, view: window})); // a.click() doesn't work on firefox, unless the element is added to DOM
 			window.URL.revokeObjectURL(url);
 		};
 	}());

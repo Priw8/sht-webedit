@@ -1,3 +1,6 @@
+* {
+	scrollbar-color: #2a2c2e #1c1e1f;
+}
 body, html {
 	height: 100%;
 	margin: 0px;
@@ -5,7 +8,7 @@ body, html {
 }
 
 body {
-	background: #333333;
+	background: rgb(48, 51, 54);
 	color: #EEEEEE;
 }
 
@@ -19,7 +22,7 @@ input {
 	color: #EEEEEE;
 }
 button {
-	border: 1px solid #666666;
+	border: 1px solid #515151;
 	background: #444444;
 	color: #EEEEEE;
 	cursor: pointer;
@@ -49,9 +52,9 @@ a {
 	left: 0px;
 	width: 100%;
 	height: 30px;
-	background: #CCCCCC;
-	color: black;
-	border: 1px solid black;
+	background: #222222;
+	color: #CCCCCC;
+	border: 1px solid #515151;
 }
 .file-info {
 	line-height: 30px;
@@ -62,20 +65,20 @@ a {
 	line-height: 30px;
 	margin-left: 5px;
 	float: left;
-	border-left: 1px solid black;
-	border-right: 1px solid black;
+	border-left: 1px solid #515151;
+	border-right: 1px solid #515151;
 	padding-left: 5px;
 	padding-right: 5px;
 }
 .toolbar-entry {
 	width: 85px;
-	border-right: 1px solid black;
+	border-right: 1px solid #515151;
 	border-collapse: collapse;
 	float: left;
 	cursor: pointer;
 }
 .toolbar-entry:hover {
-	background: #FFFFFF;
+	background: #333333;
 }
 .toolbar-entry:hover .toolbar-dropdown {
 	display: block;
@@ -88,9 +91,9 @@ a {
 }
 .toolbar-dropdown {
 	display: none;
-	background: #BBBBBB;
+	background: #252525;
 	width: 165px;
-	border: 1px solid black;
+	border: 1px solid #515151;
 	margin-left: -1px;
 }
 .dropdown-entry {
@@ -98,7 +101,7 @@ a {
 	cursor: pointer;
 }
 .dropdown-entry:hover {
-	background: #EEEEEE;
+	background: #333333;
 }
 
 

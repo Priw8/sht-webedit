@@ -1,5 +1,5 @@
-let version = "1.9";
-let changelog = ["Exporting now works in firefox", "Better UI colors"];
+let version = "1.9b";
+let changelog = ["Exporting now works in firefox", "Better UI colors", "(ver. b) allow ignoring errors when exporting"];
 let $fileinfo, $console, $logs, $evalInput, $radDeg, $radInput, $degInput, $filetree, $container, $tip, $open, $ver, 
 	$verOut, $filename, $export, $log, $clipboard, $openLS, $openLSsel, currentStruct, saveByteArray, validationOff = false;
 

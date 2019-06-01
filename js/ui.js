@@ -278,7 +278,7 @@ function log(txt) {
 };
 
 function error(txt) {
-	log("Error: " + txt);
+	log("<span style='color:#ff6f6f'>Error: " + txt+"</span>");
 	openConsole();
 };
 
@@ -286,11 +286,30 @@ function doEval() {
 	let val = $evalInput.value;
 	$evalInput.value = "";
 	log("&gt; "+val);
-	try {
-		let res = eval(val);
-		log("&lt; " + res);
-	} catch(e) {
-		log(e.toString());
+	let input = val.split(" ");
+	let cmd = input.splice(0, 1)[0];
+	let handle = ({
+		"validation": state  => {
+			if (state == "on") {
+				validationOff = false;
+				return "Validation turned on";
+			} else if (state == "off") {
+				validationOff = true;
+				return "Validation turned off";
+			} else {
+				return "Invalid validation state, must be either 'on' or 'off'";
+			}
+		}
+	})[cmd];
+	if (handle) {
+		log("&lt; " + handle.apply(window, input));
+	} else {
+		try {
+			let res = eval(val);
+			log("&lt; " + res);
+		} catch(e) {
+			log(e.toString());
+		};
 	};
 };
 

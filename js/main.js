@@ -1,7 +1,7 @@
 let version = "1.9";
 let changelog = ["Exporting now works in firefox", "Better UI colors"];
 let $fileinfo, $console, $logs, $evalInput, $radDeg, $radInput, $degInput, $filetree, $container, $tip, $open, $ver, 
-	$verOut, $filename, $export, $log, $clipboard, $openLS, $openLSsel, currentStruct, saveByteArray;
+	$verOut, $filename, $export, $log, $clipboard, $openLS, $openLSsel, currentStruct, saveByteArray, validationOff = false;
 
 function getStruct($sel, raw) {
 	let val = raw ? $sel : $sel.value;

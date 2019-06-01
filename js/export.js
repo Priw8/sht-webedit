@@ -20,12 +20,20 @@ function exportSht() {
 	} else exportToLS(arr, name, struct.editorVer);
 };
 
+function err(txt, fatal) {
+	error(txt);
+	if (!fatal) {
+		if (validationOff) log("Validation is off, ignoring error..."); 
+		else throw "Use '<span style=\"color:lime\">validation off</span>' command in this console to try to export despite the error.";
+	} else log("Fatal error - cannot export this!");
+}
+
 function validateExport(data, struct) {
 	let ver = struct.ver;
 
 	//check if trance shooterset exists
 	if (ver == 13) {
-		if (data.sht_arr.extra.length < 1) throw "trance shooterset doesn't exist";
+		if (data.sht_arr.extra.length < 1)  err("trance shooterset doesn't exist");
 	};
 
 	//check amount of foc/unfoc shootersets
@@ -34,8 +42,8 @@ function validateExport(data, struct) {
 		let len = data.pwr_lvl_cnt + 1;
 		if (!isNaN(len)) {
 			if (struct.f_uf_shooter_split) {
-				if (data.sht_arr.focused.length != len) throw "bad amount of focused shootersets (should be "+len+")";
-				if (data.sht_arr.unfocused.length != len) throw "bad amount of unfocused shootersets (should be "+len+")";
+				if (data.sht_arr.focused.length != len) err("bad amount of focused shootersets (should be "+len+")");
+				if (data.sht_arr.unfocused.length != len) err("bad amount of unfocused shootersets (should be "+len+")");
 			};
 		};
 	};
@@ -43,11 +51,11 @@ function validateExport(data, struct) {
 	//check if sht_off_cnt equals the amount of shootersets
 	let cnt = data.sht_off_cnt;
 	let sum = data.sht_arr.unfocused.length + data.sht_arr.focused.length + data.sht_arr.extra.length +  data.sht_arr.main.length;
-	if (cnt != sum) throw "bad sht_off_cnt (should be "+sum+")";
+	if (cnt != sum) err("bad sht_off_cnt (should be "+sum+")");
 
 	//ZUN's parser is jank and expects shooterset array offset to be static, so some games have forced shtoffarr lengths
 	if (struct.forced_shtoffarr_len) {
-		if (cnt != struct.forced_shtoffarr_len) throw "ZUN's parser is jank and expects shooterset array to start at a static offset, so sht_off_cnt must be "+struct.forced_shtoffarr_len+". If it's too small, you can add empty extra shootersets, if it's too big... well, then you can't do whatever you're trying to do"
+		if (cnt != struct.forced_shtoffarr_len)  err("ZUN's parser is jank and expects shooterset array to start at a static offset, so sht_off_cnt must be "+struct.forced_shtoffarr_len+". If it's too small, you can add empty extra shootersets, if it's too big... well, then you can't do whatever you're trying to do");
 	};
 };
 
@@ -91,7 +99,7 @@ function getExportArr(struct) {
 			case "sht_arr":
 				let {push, offsets, powers} = getExportShtArr(struct);
 				arr.push.apply(arr, push);
-				if (offsets.length != getLastValid("main", "sht_off_cnt")) throw "shoot offset count mismatch (should be "+offsets.length+")";
+				if (offsets.length != getLastValid("main", "sht_off_cnt")) err("shoot offset count mismatch (should be "+offsets.length+")", true);
 				let entrysize = struct.ver > 12 ? 4 : 8;
 				for (let j=0; j<offsets.length; j++) {
 					let off = struct.sht_off_type == "rel" ? offsets[j] : offsets[j] + sht_off_off + offsets.length*entrysize;

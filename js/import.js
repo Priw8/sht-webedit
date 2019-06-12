@@ -19,7 +19,8 @@ function readFile() {
 	currentStruct = struct;
 	log("sht version "+$ver.value);
 	try {
-		readSht(array, struct);
+		let data = readSht(array, struct);
+		generateEditorTable(data, struct);
 		setFileInfo($filename.value + " (v"+struct.ver+")");
 	} catch(e) {
 		log("An error has occurred while parsing the .sht file. Have you selected the right .sht version?");
@@ -37,7 +38,8 @@ function readSht(arr, struct) {
 	if (struct.ver == 10 || struct.ver == 10.3) data.pwr_lvl_cnt = 4; // janky format of a janky game
 
 	while(offset < arr.length) {
-		let prop = main[i], type = main[i+1];
+		let prop = main[i], tmp = main[i+1].split("@");
+		let type = tmp[0], typeArg = tmp[1];
 		let val, len;
 		log("read "+prop+" ("+type+")");
 		switch(type) {
@@ -62,6 +64,10 @@ function readSht(arr, struct) {
 				len = 4;
 				val = readFloat(arr[offset+3], arr[offset+2], arr[offset+1], arr[offset]);
 			break;
+			case "string":
+				len = parseInt(typeArg);
+				val = readShiftJisString(arr.slice(offset, offset + len));
+			break;
 
 			//special cases
 			case "option_pos":
@@ -79,6 +85,14 @@ function readSht(arr, struct) {
 				len = 99999999999999999999999;
 				val = readShtArr(arr, offset, data.sht_off, struct.sht_arr, struct.flags_len, data.pwr_lvl_cnt, struct.sht_off_type, data.powers);
 			break;
+			case "spellname_arr": // thanks PoFV
+				val = [];
+				len = 0;
+				for (let i=0; i<struct.spellname_arr_len; i++) {
+					val.push(readShiftJisString(arr.slice(offset + len, offset + len + struct.spellname_len)));
+					len += struct.spellname_len;
+				}
+			break;
 			default:
 				throw "unknown datatype - "+type;
 			break;
@@ -87,7 +101,7 @@ function readSht(arr, struct) {
 		offset += len;
 		i+=2;
 	};
-	generateEditorTable(data, struct);
+	return data;
 };
 
 function readShtArr(arr, offset, sht_off, struct, flags_len, pwr_lvl_cnt, off_type, powers) {

@@ -371,12 +371,13 @@ function tableInput($targ, val, type, stat) {
 		break;
 	};
 
-	updateData(Number($targ.value), stat);
+	updateData($targ.value, stat);
 };
 
 function updateData(val, stat) {
 	let table = activeTable[0], foc = activeTable[1], pow = activeTable[2];
 	if (table == "sht_arr") {
+		val = Number(val);
 		if (stat != "power") {
 			let [i, rstat, flagno] = stat.split("-");
 			if (rstat != "flag") shtObject[table][foc][pow][i][rstat] = val;
@@ -385,11 +386,14 @@ function updateData(val, stat) {
 			shtObject[table][foc][pow].power = val;
 		};
 	} else if (table == "main") {
-		shtObject[stat] = val;
+		shtObject[stat] = Number(val);
 	} else if (table == "option_pos") {
 		let [foc, pow, i, coord] = stat.split("-");
-		shtObject[table][foc][pow][i][coord] = val
-	};
+		shtObject[table][foc][pow][i][coord] = Number(val);
+	} else if (table == "spellname_arr") {
+		let num = stat.split("-")[1];
+		shtObject[table][num] = val;
+	}
 };
 
 function initUI() {
@@ -454,6 +458,7 @@ function generateFileTree(regen) {
 
 	html += "<div data-tree='main' onclick='loadTable(\"main\", false, false, this)' class='filetree-entry'>main</div>";
 	if (currentStruct.option_pos_len) html += "<div data-tree='option_pos' onclick='loadTable(\"option_pos\", false, false, this)' class='filetree-entry'>option_pos</div>";
+	if (currentStruct.spellname_arr_len) html += "<div data-tree='option_pos' onclick='loadTable(\"spellname_arr\", false, false, this)' class='filetree-entry'>spellname_arr</div>";
 	html += "<div data-tree='sht_off' onclick='loadTable(\"sht_off\", false, false, this)' class='filetree-entry'>sht_off</div>";
 
 	if (currentStruct.f_uf_shooter_split) {
@@ -484,7 +489,10 @@ function generateFileTree(regen) {
 		html += "<div data-tree='sht_arr_main' class='filetree-entry expandable hidden'>";
 			html += "<div onclick='expandTree(this)' class='expandable-text'>sht_arr_main</div>";
 			for (let i=0; i<tables.sht_arr.main.length; i++) {
-				html += "<div data-tree='main-"+i+"' class='expandable-option'><span onclick='loadTable(\"sht_arr\", \"main\", "+i+", this)'>"+i+" power</span> <span onclick='removeShooterset(\"main\", "+i+")'>(del)</span> <span onclick='copyShooterset(\"main\", "+i+")'>(copy)</span></div>";
+				let txt;
+				if (currentStruct.ver != 9) txt = i + " power";
+				else txt = "shooterset "+i;
+				html += "<div data-tree='main-"+i+"' class='expandable-option'><span onclick='loadTable(\"sht_arr\", \"main\", "+i+", this)'>"+txt+"</span> <span onclick='removeShooterset(\"main\", "+i+")'>(del)</span> <span onclick='copyShooterset(\"main\", "+i+")'>(copy)</span></div>";
 			};
 			html += "<div class='expandable-option' onclick='addShooterset(\"main\")'><span>Add new</span></div>";
 		html += "</div>";
@@ -556,6 +564,8 @@ function generateEditorTable(data, struct) {
 			generateShotOffsetTable(data, struct);
 		} else if (type == "sht_arr") {
 			generateShootArrayTable(data, struct);
+		} else if (type == "spellname_arr") {
+			generateSpellNameArrayTable(data, struct);
 		} else {
 			html += `
 			<tr>
@@ -572,6 +582,21 @@ function generateEditorTable(data, struct) {
 
 	generateFileTree();
 };
+
+function generateSpellNameArrayTable(data, struct) {
+	log("generate spellname_arr table");
+	data = data.spellname_arr;
+	let html = "<h3>spellname_arr</h3>";
+	for (let i=0; i<data.length; i++) {
+		let name = data[i];
+		html += "spell name "+i+": ";
+		html += "<input style='width: 300px' value='"+sanitizeString(name)+"' data-type='shift_jis string' data-stat='spellname-"+i+"'>";
+		html += "<br><br>";
+	}
+	let $spellname_arr = document.createElement("div");
+	$spellname_arr.innerHTML = html;
+	tables.spellname_arr = $spellname_arr;
+}
 
 function generateOptionPosTable(data, struct) {
 	log("generate option_pos table");
@@ -655,7 +680,9 @@ function generateShootArrayTable(data, struct) {
 			if (shooters.power) { // power to switch to next shooterset at (<TH10)
 				let $div = document.createElement("div");
 				$div.style.width = "100%";
-				$div.innerHTML = "Power to switch to next shooterset at: <input value='"+shooters.power+"' data-type='uint32' data-stat='power'>";
+				let txt = "Power to switch to next shooterset at";
+				if (currentStruct.ver == 9) txt += " (leftover from PCB/IN file format)";
+				$div.innerHTML = txt + ": <input value='"+shooters.power+"' data-type='uint32' data-stat='power'>";
 				$btts.appendChild($div);
 			};
 

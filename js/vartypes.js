@@ -36,6 +36,20 @@ function readUint32(byte1, byte2, byte3, byte4) {
 	return view.getUint32(0);
 };
 
+function readShiftJisString(bytes) {
+	for (let i=0; i<bytes.length; i+=2) {
+		if (bytes[i] == 0 && bytes[i+1] == 0) {
+			bytes = bytes.slice(0, i);
+			break;
+		}
+	}
+	return Encoding.convert(bytes, {
+		"to": "unicode",
+		"from": "SJIS",
+		"type": "string" // return as string
+	});
+}
+
 function int16ToBytes(val) {
 	let buff = new ArrayBuffer(2);
 	let view = new DataView(buff);
@@ -63,3 +77,26 @@ function uint32ToBytes(val) {
 	view.setUint32(0, val);
 	return [view.getUint8(0), view.getUint8(1), view.getUint8(2), view.getUint8(3)];
 };
+
+function shiftJisStringToBytes(val, length) {
+	let arr = Encoding.convert(val, {
+		"to": "SJIS",
+		"from": "unicode",
+		"type": "array"
+	});
+	if (arr.length > length) throw "Spell name length exceeds "+length+" bytes ("+sanitizeString(val)+")";
+	while (arr.length < length) arr.push(0);
+	return arr;
+} 
+
+const ENTITIES = {
+	"&": "&amp;",
+	"<": "&lt;",
+	">": "&gt;",
+	"\"": "&quot;",
+	"'": "&apos;"
+}
+function sanitizeString(str) {
+	for (let char in ENTITIES) str = str.replace(new RegExp(char, "g"), ENTITIES[char]);
+	return str;
+}

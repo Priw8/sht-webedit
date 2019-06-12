@@ -130,11 +130,21 @@ function getExportArr(struct) {
 					};
 				};
 			break;
+			case "spellname_arr":
+				arr.push.apply(arr, getExportSpellNameArray(struct));
+			break;
 		};
 	};
 	console.log(arr);
 	return arr;
 };
+
+function getExportSpellNameArray(struct) {
+	let arr = shtObject.spellname_arr;
+	let bytes = [];
+	for (let i=0; i<arr.length; i++) bytes.push.apply(bytes, shiftJisStringToBytes(arr[i], struct.spellname_len));
+	return bytes;
+}
 
 function getExportShtArr(struct) {
 	let arr = [];

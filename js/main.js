@@ -1,5 +1,5 @@
-let version = "1.9b";
-let changelog = ["Exporting now works in firefox", "Better UI colors", "(ver. b) allow ignoring errors when exporting"];
+let version = "2.0a";
+let changelog = ["Experimental PoFV support"];
 let $fileinfo, $console, $logs, $evalInput, $radDeg, $radInput, $degInput, $filetree, $container, $tip, $open, $ver, 
 	$verOut, $filename, $export, $log, $clipboard, $openLS, $openLSsel, currentStruct, saveByteArray, validationOff = false;
 
@@ -8,46 +8,36 @@ function getStruct($sel, raw) {
 	switch (val) {
 		case "07":
 			return window.struct_07;
-		break;
 		case "08":
 			return window.struct_08;
-		break;
+		case "09":
+			return window.struct_09;
 		case "10":
 			return window.struct_10;
-		break;
 		case "alcostg":
 			return window.struct_alcostg;
-		break;
 		case "11":
 		case "12":
 			return window.struct_12;
-		break;
 		case "12.8":
 			return window.struct_128;
-		break;
 		case "13":
 			return window.struct_13;
-		break;
 		case "14":
 		case "15":
 			return window.struct_15;
-		break;
 		case "14.3":
 			return window.struct_143;
-		break;
 		case "16":
 			return window.struct_16;
-		break;
 		case "16.5": //actually can be loaded in the same way I guess
 		case "16-sub":
 			return window.struct_16_sub;
-		break;
 		case "17tr":
 			return window.struct_17tr;
 		break;
 		default:
 			throw "unsupported version";
-		break;
 	};
 };
 

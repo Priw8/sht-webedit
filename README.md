@@ -4,6 +4,7 @@ a tool for editing .sht files used in Touhou games - https://priw8.github.io/sht
 ### Supported games
 - TH07 - Perfect Cherry Blossom
 - TH08 - Imperishable Night
+- TH09 - Phantasmagoria of Flower View
 - TH10 - Mountain of Faith
 - TH11 - Subterranean Animism
 - TH12 - Undefined Fantastic Object

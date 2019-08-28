@@ -1,5 +1,9 @@
-let version = "2.0a";
-let changelog = ["Experimental PoFV support"];
+let version = "2.1a";
+let changelog = [
+	"Correct th15 flag/rate2/delay2 reading (thanks to <a href='https://github.com/RUEEE' target='_blank'>RUEEE</a>)",
+	"Fixed test .sht loading",
+	"Renamed th17tr to th17 (it just works)"
+];
 let $fileinfo, $console, $logs, $evalInput, $radDeg, $radInput, $degInput, $filetree, $container, $tip, $open, $ver, 
 	$verOut, $filename, $export, $log, $clipboard, $openLS, $openLSsel, currentStruct, saveByteArray, validationOff = false;
 
@@ -24,18 +28,18 @@ function getStruct($sel, raw) {
 		case "13":
 			return window.struct_13;
 		case "14":
-		case "15":
-			return window.struct_15;
+			return window.struct_14;
 		case "14.3":
 			return window.struct_143;
+		case "15":
+			return window.struct_15;
 		case "16":
 			return window.struct_16;
 		case "16.5": //actually can be loaded in the same way I guess
 		case "16-sub":
 			return window.struct_16_sub;
-		case "17tr":
-			return window.struct_17tr;
-		break;
+		case "17":
+			return window.struct_17;
 		default:
 			throw "unsupported version";
 	};

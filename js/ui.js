@@ -153,8 +153,9 @@ function loadLS() {
 	let ind = ($openLSsel.value - 1)*2; // ind=-2 is the bundled sanae
 	if (ind == -2) {
 		currentStruct = window.struct_15;
-		readSht(window._testshot, window.struct_15);
-		setFileInfo("LoLK Sanae.sht");
+		const data = readSht(window._testshot, window.struct_15);
+		generateEditorTable(data, window.struct_15);
+		setFileInfo("LoLK Sanae.sht (v15)");
 	} else {
 		let list = localStorage.getItem("___fileIndex");
 		list = JSON.parse(list);
@@ -666,7 +667,7 @@ function generateShootArrayTable(data, struct) {
 			tables.sht_arr[foc][pow] = [];
 			let i=0;
 			for (i; i<shooters.length; i++) {
-				let html = generateOneShooterTable(shooters[i], shtstruct, struct.flags_len, foc, pow, i);
+				let html = generateOneShooterTable(shooters[i], shtstruct, struct.flags_len, struct.flag_size, foc, pow, i);
 				let $wrap = document.createElement("div");
 				$wrap.classList.add("shooter-table");
 				$wrap.innerHTML = html;
@@ -707,7 +708,7 @@ function generateShootArrayTable(data, struct) {
 	};
 };
 
-function generateOneShooterTable(shooter, shtstruct, flags_len, foc, pow, i) {
+function generateOneShooterTable(shooter, shtstruct, flags_len, flag_size, foc, pow, i) {
 	let html = "";
 	html += "<i>shooter "+i+"</i>";
 	html += "<button style='width: 50%' onclick='removeShooter("+i+", this)'>remove shooter</button>";
@@ -718,12 +719,21 @@ function generateOneShooterTable(shooter, shtstruct, flags_len, foc, pow, i) {
 		let stat = shtstruct[j];
 		let type = shtstruct[j+1];
 		if (type == "flags") {
-			let flen = flags_len/2;
+			let typeStr;
+			switch(flag_size) {
+				case 2:
+					typeStr = "int16";
+					break;
+				case 4:
+					typeStr = "int32";
+					break;
+			}
+			let flen = flags_len/flag_size;
 			for (let flag=0; flag<flen; flag++) {
 				html += `
 				<tr>
 					<td>flag ${flag}</td>
-					<td><input value="${shooter.flags[flag]}" data-type="int16" data-stat="${i}-flag-${flag}"></td>
+					<td><input value="${shooter.flags[flag]}" data-type="${typeStr}" data-stat="${i}-flag-${flag}"></td>
 				</tr>
 				`;
 			};

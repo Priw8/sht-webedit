@@ -47,6 +47,7 @@ window.struct_13 = {
 	option_pos_len: 0xA0,
 	max_opt: 0x04,
 	flags_len: 0x12,
+	flag_size: 2,
 	type: "maingame",
 	forced_shtoffarr_len: 0x0B,
 	f_uf_shooter_split: true

@@ -45,6 +45,7 @@ window.struct_alcostg = {
 	option_pos_len: 0xF0,
 	max_opt: 0x08,
 	flags_len: 0x10,
+	flag_size: 2,
 	type: "photogame", // I should probably rename this type from photogame to something else, it's kinda confusing
 	forced_shtoffarr_len: false,
 	f_uf_shooter_split: true

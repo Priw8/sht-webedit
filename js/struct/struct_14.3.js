@@ -53,6 +53,7 @@ window.struct_143 = {
 	option_pos_len: 0xA0,
 	max_opt: 0x04,
 	flags_len: 0x32,
+	flag_size: 2,
 	type: "photogame",
 	forced_shtoffarr_len: 0x0A,
 	f_uf_shooter_split: true

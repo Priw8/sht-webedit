@@ -46,6 +46,7 @@ window.struct_08 = {
 	option_pos_len: false, // they don't exist here
 	max_opt: false, // ^
 	flags_len: 0x10,
+	flag_size: 2,
 	type: "maingame",
 	forced_shtoffarr_len: false,
 	f_uf_shooter_split: false

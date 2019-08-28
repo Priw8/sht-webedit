@@ -1,6 +1,6 @@
-window.struct_17tr = {
-	ver: 17,
-	editorVer: "17tr",
+window.struct_14 = {
+	ver: 14,
+	editorVer: "14",
 	main: [
 		"unknown_head", "int16",
 		"sht_off_cnt", "int16",
@@ -53,7 +53,8 @@ window.struct_17tr = {
 	option_pos_len: 0xA0,
 	max_opt: 0x04,
 	flags_len: 0x32,
+	flag_size: 2,
 	type: "maingame",
-	forced_shtoffarr_len: 0x14,
+	forced_shtoffarr_len: 0x0A,
 	f_uf_shooter_split: true
 };

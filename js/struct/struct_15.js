@@ -1,5 +1,5 @@
 window.struct_15 = {
-	ver: 14,
+	ver: 15,
 	editorVer: "15",
 	main: [
 		"unknown_head", "int16",
@@ -47,12 +47,15 @@ window.struct_15 = {
 		"anm", "byte",
 		"anm_hit", "byte",
 		"sfx_id", "int16",
+		"fire_rate2", "byte",
+		"start_delay2", "byte",
 		"flags", "flags"
 	],
 	sht_off_type: "rel",
 	option_pos_len: 0xA0,
 	max_opt: 0x04,
-	flags_len: 0x32,
+	flags_len: 0x30,
+	flag_size: 4,
 	type: "maingame",
 	forced_shtoffarr_len: 0x0A,
 	f_uf_shooter_split: true

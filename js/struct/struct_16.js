@@ -53,6 +53,7 @@ window.struct_16 = {
 	option_pos_len: 0x150,
 	max_opt: 0x06,
 	flags_len: 0x32,
+	flag_size: 2,
 	type: "maingame",
 	forced_shtoffarr_len: 0x0A,
 	f_uf_shooter_split: true

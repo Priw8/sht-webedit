@@ -1,6 +1,6 @@
-window.struct_16_sub = {
-	ver: 16,
-	editorVer: "16-sub",
+window.struct_17 = {
+	ver: 17,
+	editorVer: "17",
 	main: [
 		"unknown_head", "int16",
 		"sht_off_cnt", "int16",
@@ -50,11 +50,11 @@ window.struct_16_sub = {
 		"flags", "flags"
 	],
 	sht_off_type: "rel",
-	option_pos_len: 0x150,
-	max_opt: 0x06,
+	option_pos_len: 0xA0,
+	max_opt: 0x04,
 	flags_len: 0x32,
 	flag_size: 2,
-	type: "photogame", // it works like one
-	forced_shtoffarr_len: 0x0A,
+	type: "maingame",
+	forced_shtoffarr_len: 0x14,
 	f_uf_shooter_split: true
 };

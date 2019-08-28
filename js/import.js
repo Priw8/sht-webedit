@@ -83,7 +83,7 @@ function readSht(arr, struct) {
 			break;
 			case "sht_arr":
 				len = 99999999999999999999999;
-				val = readShtArr(arr, offset, data.sht_off, struct.sht_arr, struct.flags_len, data.pwr_lvl_cnt, struct.sht_off_type, data.powers);
+				val = readShtArr(arr, offset, data.sht_off, struct.sht_arr, struct.flags_len, struct.flag_size, data.pwr_lvl_cnt, struct.sht_off_type, data.powers);
 			break;
 			case "spellname_arr": // thanks PoFV
 				val = [];
@@ -104,7 +104,7 @@ function readSht(arr, struct) {
 	return data;
 };
 
-function readShtArr(arr, offset, sht_off, struct, flags_len, pwr_lvl_cnt, off_type, powers) {
+function readShtArr(arr, offset, sht_off, struct, flags_len, flag_size, pwr_lvl_cnt, off_type, powers) {
 	let shooters = {
 		unfocused: [],
 		focused: [],
@@ -123,14 +123,14 @@ function readShtArr(arr, offset, sht_off, struct, flags_len, pwr_lvl_cnt, off_ty
 			foc = "main";
 		};
 		let off = off_type == "rel" ? offset + sht_off[i] : sht_off[i];
-		let val = readOneSht(arr, off, struct, flags_len, i);
+		let val = readOneSht(arr, off, struct, flags_len, flag_size, i);
 		if (powers[i]) val.power = powers[i];
 		shooters[foc].push(val);
 	};
 	return shooters;
 };
 
-function readOneSht(arr, offset, struct, flags_len, pow) {
+function readOneSht(arr, offset, struct, flags_len, flag_size, pow) {
 	log("read shtset "+pow);
 	let i = 0;
 	let data = [];
@@ -170,13 +170,18 @@ function readOneSht(arr, offset, struct, flags_len, pow) {
 			case "flags":
 				len = flags_len;
 				val = [];
-				for (let i=0; i<len; i+=2) {
-					val.push(readInt16(arr[offset+i+1], arr[offset+i]));
+				for (let i=0; i<len; i+=flag_size) {
+					switch(flag_size) {
+						case 4:
+							val.push(readInt32(arr[offset+i+3], arr[offset+i+2], arr[offset+i+1], arr[offset+i]));
+							break;
+						case 2:
+							val.push(readInt16(arr[offset+i+1], arr[offset+i]));
+					}
 				};
 			break;
 			default:
 				throw "unknown datatype - "+type;
-			break;
 		};
 		if (!data[shooter]) data[shooter] = {};
 		data[shooter][prop] = val;

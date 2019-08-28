@@ -241,10 +241,19 @@ function getExportOneShooter(struct, foc, pow, index) {
 
 			//special
 			case "flags":
-				let cnt = struct.flags_len/2;
+				let cnt = struct.flags_len/struct.flag_size;
 				for (let j=0; j<cnt; j++) {
 					let val = Number(getLastValid("sht_arr", index+"-flag-"+j, foc, pow));
-					arr.push.apply(arr, int16ToBytes(val).reverse());
+					let data;
+					switch(struct.flag_size) {
+						case 2:
+							data = int16ToBytes(val).reverse();
+							break;
+						case 4:
+							data = int32ToBytes(val).reverse();
+							break;
+					}
+					arr.push.apply(arr, data);
 				};
 			break;
 		};

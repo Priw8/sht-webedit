@@ -678,7 +678,7 @@ function generateShootArrayTable(data, struct) {
 			$btts.style.width = "100%";
 			$btts.style.float = "left";
 
-			if (shooters.power) { // power to switch to next shooterset at (<TH10)
+			if (typeof shooters.power != "undefined") { // power to switch to next shooterset at (<TH10)
 				let $div = document.createElement("div");
 				$div.style.width = "100%";
 				let txt = "Power to switch to next shooterset at";
@@ -791,7 +791,7 @@ function generateEmptyShooterFromStruct(struct) {
 
 function addShooterset(foc) {
 	let arr = shtObject.sht_arr[foc];
-	arr.push([]);
+	arr.push(defaultShooterset(currentStruct.ver));
 	generateShootArrayTable(shtObject, currentStruct);
 	generateFileTree(true);
 };
@@ -845,3 +845,11 @@ function copyShooterset(foc, pow) {
 	clipboard = cloneObject(arr);
 	updateClipboardInfo(arr.length + " shooter(s) from "+foc+"_"+pow);
 };
+
+function defaultShooterset(ver) {
+	const ret = [];
+	if (ver < 10)
+		ret.power = 999;
+
+	return ret;
+}

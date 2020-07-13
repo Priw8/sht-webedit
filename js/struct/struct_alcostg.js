@@ -39,12 +39,15 @@ window.struct_alcostg = {
 		"anm", "int16",
 		"anm_hit", "int16",
 		"sfx_id", "int16",
-		"flags", "flags"
+		"func_on_init", "int32",
+		"func_on_tick", "int32",
+		"_old_on_draw", "int32",
+		"func_on_hit", "int32"
 	],
 	sht_off_type: "abs",
 	option_pos_len: 0xF0,
 	max_opt: 0x08,
-	flags_len: 0x10,
+	flags_len: 0x0,
 	flag_size: 2,
 	type: "photogame", // I should probably rename this type from photogame to something else, it's kinda confusing
 	forced_shtoffarr_len: false,

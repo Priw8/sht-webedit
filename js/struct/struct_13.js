@@ -41,12 +41,16 @@ window.struct_13 = {
 		"anm", "byte",
 		"anm_hit", "byte",
 		"sfx_id", "int16",
-		"flags", "flags"
+		"unknown_sht_int16", "int16", // NOT rate2/delay2
+		"func_on_init", "int32",
+		"func_on_tick", "int32",
+		"_old_on_draw", "int32",
+		"func_on_hit", "int32"
 	],
 	sht_off_type: "rel",
 	option_pos_len: 0xA0,
 	max_opt: 0x04,
-	flags_len: 0x12,
+	flags_len: 0x0,
 	flag_size: 2,
 	type: "maingame",
 	forced_shtoffarr_len: 0x0B,

@@ -37,12 +37,15 @@ window.struct_07 = {
 		"unknown_old_sht_1", "byte",
 		"anm", "int16",
 		"sfx_id", "int16",
-		"flags", "flags"
+		"func_on_init", "int32",
+		"func_on_tick", "int32",
+		"func_on_draw", "int32",
+		"func_on_hit", "int32"
 	],
 	sht_off_type: "abs",
 	option_pos_len: false, // they don't exist here
 	max_opt: false, // ^
-	flags_len: 0x10,
+	flags_len: 0x0,
 	flag_size: 2,
 	type: "maingame",
 	forced_shtoffarr_len: false,

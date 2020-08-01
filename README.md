@@ -60,14 +60,22 @@ shootersets for each power level of focused/unfocused mode. There's also "extra"
 
 shooter tables
 
-- fire_rate - delay between bullets being shot (LoLK also has a flag that affects this?)
+- fire_rate - delay between bullets being shot. More info below
 - start_delay - delay before the shooter activates after pressing the shot key
 - off_x/y - x/y offset of bullet spawning from the sprite the shooter is assigned to
 - hitbox_x/y - obvious
-- angle - angle at which the bullets fire (in radians; 0 is straight right)
+- angle - angle at which the bullets fire (clockwise in radians; 0 is straight right)
 - speed - speed at which the bullets move
-- option - option to which the shooter is assigned. 0 = player
+- option - option to which the shooter is assigned. 0 = player. 100 is added for subseason options
 - anm - anm script of the bullet
 - anm_hit - anm script when the bullet hits something
 - sfx_id - sound id to play when the shooter fires a bullet
-- flags - they do a variety of things, such as making the bullets homing, giving them splash damage etc. (documentation is yet to be made). Note that their behaviour may differ even if the .sht format is the same version (e.g. DDC and LoLK flags do different things)
+- fire_rate2/start_delay2 - see below
+- func_on_init/tick/draw/hit - sets index of hardcoded functions that implement behavior like homing, splash damage, hit sound effects, etc. (documentation is yet to be made). Different games have different functions
+- flags - mysterious extra fields, seldom used, who knows
+
+more about fire_rate/start_delay
+
+- PCB - shooting uses a 60-frame timer.  For bullets to fire consistently, choose a fire_rate that is a factor of 60
+- IN-DDC - shooting uses a 15-frame timer, so any rate other than 1, 3, 5, or 15 will be uneven
+- LoLK onwards - fire_rate/start_delay still use a 15-frame timer, but there are alternative fields fire_rate2/start_delay2 that use a 120-frame timer. (when fire_rate2 is set, the original fire_rate/start_delay are ignored).  Shots using this timer famously have rare bugs that can cause them to stop firing

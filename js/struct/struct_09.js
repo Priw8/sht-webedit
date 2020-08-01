@@ -38,12 +38,16 @@ window.struct_09 = {
 		"unknown_old_sht_2", "int16",
 		"anm", "int16",
 		"sfx_id", "int16",
-		"flags", "flags"
+		"flags", "flags",
+		"func_on_init", "int32",
+		"func_on_tick", "int32",
+		"func_on_draw", "int32",
+		"func_on_hit", "int32"
 	],
 	sht_off_type: "abs",
 	option_pos_len: false, 
 	max_opt: false, 
-	flags_len: 0x10,
+	flags_len: 0x0,
 	flag_size: 2,
 	type: "maingame",
 	forced_shtoffarr_len: false,

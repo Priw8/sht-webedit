@@ -1,6 +1,13 @@
 function exportSht() {
 	let name = $filename.value;
-	if (name == "") name = "export.sht";
+	if (name == "")
+		name = exportType == EXPORT.JSON ? "export.json" : "export.sht";
+
+	if (exportType == EXPORT.JSON) {
+		saveDataToFile([JSON.stringify(shtObject, null, 4)], name);
+		return;
+	}
+
 	let struct = getStruct($verOut);
 	log("export sht v"+$verOut.value);
 	let arr;
@@ -13,11 +20,16 @@ function exportSht() {
 		throw e;
 	};
 
-	if (!exportLS) {
-		// it's now necessary to convert the array to binary
-		let binary = new Uint8Array(arr);
-		saveByteArray([binary], name);
-	} else exportToLS(arr, name, struct.editorVer);
+	// global var set in ui.js
+	switch(exportType) {
+		case EXPORT.SHT:
+			saveDataToFile([new Uint8Array(arr)], name);	
+			break;
+
+		case EXPORT.LS:
+			exportToLS(arr, name, struct.editorVer);
+			break;
+	}
 };
 
 function err(txt, fatal) {

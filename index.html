@@ -32,10 +32,14 @@
 		<div class="toolbar-entry">
 			<div class="toolbar-entry-text">File</div>
 			<div class="toolbar-dropdown">
-				<div class="dropdown-entry" data-toolbar="open">Load (disk)</div>
+				<div class="dropdown-entry-header">Import</div>
+				<div class="dropdown-entry" data-toolbar="open">Load (.sht)</div>
+				<div class="dropdown-entry" data-toolbar="openJson">Load (.json)</div>
 				<div class="dropdown-entry" data-toolbar="openLS">Load (browser storage)</div>
+				<div class="dropdown-entry-header">Export</div>
 				<!-- <div class="dropdown-entry" data-toolbar="opentest">Load test .sht</div> -->
-				<div class="dropdown-entry" data-toolbar="export">Save (disk)</div>
+				<div class="dropdown-entry" data-toolbar="export">Save (.sht)</div>
+				<div class="dropdown-entry" data-toolbar="exportJson">Save (.json)</div>
 				<div class="dropdown-entry" data-toolbar="exportLS">Save (browser storage)</div>
 			</div>
 		</div>
@@ -115,7 +119,7 @@
 		</div>
 		<div class="export">
 			<input placeholder="filename" class="filename"> <button onclick="exportSht()">Save</button>
-				<div class="version-select">
+			<div class="version-select">
 				<select class="sht-ver-out"></select>
 				Select .sht version
 			</div>
@@ -123,6 +127,15 @@
 		<div class="openLS">
 			<b>Select file from previously saved</b>
 			<select class="openLS-sel"></select> <button onclick="loadLS()">Load</button> <button onclick="deleteFromLS()">Delete</button>
+		</div>
+		<div class="openJson">
+			<b>Note: </b>there is no validation for JSON importing.
+			<input type="file" class="file-input" accept=".json" onchange="openFileJson(this.files)">
+			<button onclick="readFileJson()">Load</button>
+			<div class="version-select">
+				<select class="json-ver-in"></select>
+				Select game version
+			</div>
 		</div>
 	</div>
 </body>

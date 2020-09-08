@@ -100,8 +100,13 @@ a {
 	padding: 5px;
 	cursor: pointer;
 }
-.dropdown-entry:hover {
+.dropdown-entry:hover, .dropdown-entry-header:hover {
 	background: #333333;
+}
+.dropdown-entry-header {
+	padding: 5px;
+	background: #2A2A2A;
+	font-weight: bold;
 }
 
 

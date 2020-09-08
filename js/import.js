@@ -9,6 +9,14 @@ function openFile(files) {
 	reader.readAsArrayBuffer(sht);
 };
 
+function openFileJson(files) {
+	let json = files[0];
+	$filename.value = json.name;
+	reader = new FileReader();
+	reader.onload = f => file = f;
+	reader.readAsBinaryString(json);
+}
+
 function readFile() {
 	if (!file) return;
 	let arrayBuffer = reader.result;
@@ -28,6 +36,33 @@ function readFile() {
 		throw e;
 	};
 };
+
+function readFileJson() {
+	if (!file) return;
+	
+	let data;
+	try {
+		data = JSON.parse(reader.result);
+	} catch(e) {
+		log("An error has occurred while parsing the .json file (invalid syntax, probably)");
+		error(e.toString());
+		throw e;
+	}
+	log("file loaded (JSON)");
+
+	let struct = getStruct($verInJson);
+	currentStruct = struct;
+	log("sht version "+$verInJson.value);
+
+	try {
+		generateEditorTable(data, struct);
+		setFileInfo($filename.value + " (v"+struct.ver+")");
+	} catch(e) {
+		log("An error has occurred while loading the .json file. Have you selected the right game version?");
+		error(e.toString());
+		throw e;
+	};
+}
 
 function readSht(arr, struct) {
 	log("reading file");

@@ -16,7 +16,13 @@ let shtObject = null;
 
 let clipboard = [];
 
-let exportLS = false;
+let exportType = false;
+
+const EXPORT = {
+	SHT: 0,
+	JSON: 1,
+	LS: 2
+}
 
 function getTemplate(classname) {
 	let temp = document.querySelector("."+classname+".template").cloneNode(true);
@@ -41,6 +47,9 @@ function toolbarAction(action) {
 		case "open":
 			openImport();
 		break;
+		case "openJson":
+			openImportJson();
+		break;
 		case "openLS":
 			openImportLS();
 		break;
@@ -48,10 +57,13 @@ function toolbarAction(action) {
 			loadTest();
 		break;*/
 		case "export":
-			openExport(false);
+			openExport(EXPORT.SHT);
+		break;
+		case "exportJson":
+			openExport(EXPORT.JSON);
 		break;
 		case "exportLS":
-			openExport(true);
+			openExport(EXPORT.LS);
 		break;
 		case "console":
 			openConsole();
@@ -122,6 +134,14 @@ function openImport() {
 	editorWindow({
 		header: "Open",
 		content: $open,
+		width: 343
+	});
+};
+
+function openImportJson() {
+	editorWindow({
+		header: "Open",
+		content: $openJson,
 		width: 343
 	});
 };
@@ -204,9 +224,9 @@ function deleteFromLS(ind) {
 	populateOpenLSsel();
 };
 
-function openExport(LS) {
+function openExport(type) {
 	if (!shtObject) return error("Can't export a file before loading it");
-	exportLS = LS;
+	exportType = type;
 	editorWindow({
 		header: "Export",
 		content: $export,
@@ -260,7 +280,9 @@ function toRad() {
 function openInfo() {
 	editorWindow({
 		header: "Info",
-		content: "<b>.sht webeditor v"+version+" by Priw8</b>discord: Priw8#9873<br><br><b>Changelog</b>- "+changelog.join("<br>- "),
+		content: "<b>.sht webeditor v"+version+" by Priw8 & <a href='https://github.com/Priw8/sht-webedit/graphs/contributors' target='_blank'>contributors</a></b><br>" + 
+				 "discord: Priw8#9873<br>also check out the <a href='https://discord.gg/fvPJvHJ' target='_blank'>ZUNcode server!</a><br><br><b>Changelog</b>- "
+				 +changelog.join("<br>- "),
 		width: 300
 	});
 };

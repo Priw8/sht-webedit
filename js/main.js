@@ -1,8 +1,6 @@
-let version = "2.1a";
+let version = "2.2a";
 let changelog = [
-	"Correct th15 flag/rate2/delay2 reading (thanks to <a href='https://github.com/RUEEE' target='_blank'>RUEEE</a>)",
-	"Fixed test .sht loading",
-	"Renamed th17tr to th17 (it just works)"
+	"Add JSON export/import (no validation and very barebones)"
 ];
 let $fileinfo, $console, $logs, $evalInput, $radDeg, $radInput, $degInput, $filetree, $container, $tip, $open, $ver, 
 	$verOut, $filename, $export, $log, $clipboard, $openLS, $openLSsel, currentStruct, saveByteArray, validationOff = false;
@@ -74,7 +72,11 @@ window.onload = () => {
 	$openLS = document.querySelector(".openLS");
 	$openLSsel = document.querySelector(".openLS-sel");
 
-	saveByteArray = (function () {
+	$openJson = document.querySelector(".openJson");
+	$verInJson = document.querySelector(".json-ver-in");
+	$verInJson.innerHTML = $ver.innerHTML;
+
+	saveDataToFile = (function () {
 		let a = document.createElement("a");
 		a.style = "display: none";
 		document.onload = () => document.body.appendChild(a);

@@ -74,6 +74,9 @@ function toolbarAction(action) {
 		case "github":
 			window.open("https://github.com/Priw8/sht-webedit",  "_blank");
 		break;
+		case "readme":
+			window.open("https://github.com/Priw8/sht-webedit/blob/master/README.md", "_blank");
+		break;
 		case "info":
 			openInfo();
 		break;

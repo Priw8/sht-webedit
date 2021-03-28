@@ -112,8 +112,9 @@ function readSht(arr, struct) {
 			break;
 			case "sht_off":
 				len = data.sht_off_cnt*4;
-				let {off, powers} = readShtOff(arr, offset, data.sht_off_cnt, struct);
+				let {off, powers, real_sht_off_cnt} = readShtOff(arr, offset, data.sht_off_cnt, struct);
 				val = off;
+				data.real_sht_off_cnt = real_sht_off_cnt;
 				data.powers = powers;
 			break;
 			case "sht_arr":
@@ -230,21 +231,34 @@ function readShtOff(arr, offset, cnt, struct) {
 	let off = [];
 	let pow = [];
 	let off_struct = struct.sht_off;
+
+	// th18 jank
+	let isFirstOffset = true;
+	let real_sht_off_cnt = 0;
+
+	// js labels oh god oh fuck
+outerLoop:
 	for (let i=0; i<cnt; i++) {
 		for (let j=0; j<off_struct.length; j+=2) {
 			if (off_struct[j] == "offset") {
 				let val = readUint32(arr[offset+3], arr[offset+2], arr[offset+1], arr[offset]);
+				if (val == 0 && !isFirstOffset) {
+					break outerLoop;
+				}
 				off.push(val);
 			} else if (off_struct[j] == "power") {
 				let val = readUint32(arr[offset+3], arr[offset+2], arr[offset+1], arr[offset]);
 				pow.push(val);
 			};
+			isFirstOffset = false;
+			real_sht_off_cnt = i + 1;
 			offset += 4;
 		};
 	};
 	return {
 		off: off,
-		powers: pow
+		powers: pow,
+		real_sht_off_cnt: real_sht_off_cnt
 	};
 };
 

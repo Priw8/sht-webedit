@@ -1,6 +1,7 @@
-let version = "2.2a";
+// NEWHOU
+let version = "2.3a";
 let changelog = [
-	"Add JSON export/import (no validation and very barebones)"
+	"add UM support (experimental-ish)"
 ];
 let $fileinfo, $console, $logs, $evalInput, $radDeg, $radInput, $degInput, $filetree, $container, $tip, $open, $ver, 
 	$verOut, $filename, $export, $log, $clipboard, $openLS, $openLSsel, currentStruct, saveByteArray, validationOff = false;
@@ -38,6 +39,9 @@ function getStruct($sel, raw) {
 			return window.struct_16_sub;
 		case "17":
 			return window.struct_17;
+		case "18":
+			return window.struct_18;
+		// NEWHOU
 		default:
 			throw "unsupported version";
 	};

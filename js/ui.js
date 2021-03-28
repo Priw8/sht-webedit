@@ -600,6 +600,11 @@ function generateEditorTable(data, struct) {
 			</tr>`;
 		};
 	};
+	html += `
+	<tr>
+		<td data-type="the amount of shootersets there actually are - the rest of the offset array will be filled with 0s">real_sht_off_cnt</td>
+		<td><input value="${data.real_sht_off_cnt}" data-type="int32" data-stat="real_sht_off_cnt"></td>
+	</tr>`
 	html += "</table>";
 
 	let $main = document.createElement("div");

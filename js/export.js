@@ -37,7 +37,7 @@ function err(txt, fatal) {
 	if (!fatal) {
 		if (validationOff) log("Validation is off, ignoring error..."); 
 		else throw "Use '<span style=\"color:lime\">validation off</span>' command in this console to try to export despite the error.";
-	} else log("Fatal error - cannot export this!");
+	} else throw log("Fatal error - cannot export this!");
 }
 
 function validateExport(data, struct) {
@@ -60,14 +60,22 @@ function validateExport(data, struct) {
 		};
 	};
 
+	if (data.sht_off_cnt < data.real_sht_off_cnt) err("sht_off_cnt must not be smaller than real_sht_off_cnt", true);
+
 	//check if sht_off_cnt equals the amount of shootersets
-	let cnt = data.sht_off_cnt;
+	let cnt = data.real_sht_off_cnt;
 	let sum = data.sht_arr.unfocused.length + data.sht_arr.focused.length + data.sht_arr.extra.length +  data.sht_arr.main.length;
-	if (cnt != sum) err("bad sht_off_cnt (should be "+sum+")");
+	if (cnt != sum) err("bad real_sht_off_cnt (should be "+sum+")");
 
 	//ZUN's parser is jank and expects shooterset array offset to be static, so some games have forced shtoffarr lengths
 	if (struct.forced_shtoffarr_len) {
-		if (cnt != struct.forced_shtoffarr_len)  err("ZUN's parser is jank and expects shooterset array to start at a static offset, so sht_off_cnt must be "+struct.forced_shtoffarr_len+". If it's too small, you can add empty extra shootersets, if it's too big... well, then you can't do whatever you're trying to do");
+		if (data.sht_off_cnt != struct.forced_shtoffarr_len)
+			err(
+`ZUN's parser is jank and expects shooterset array to start at a static offset,
+so sht_off_cnt must be ${struct.forced_shtoffarr_len}. If you want it to be smaller,
+you can set real_sht_off_cnt to the value you want - empty offsets will be automatically inserted,
+to match the required amount. If you want it to be bigger, you can't`
+			);
 	};
 };
 
@@ -104,15 +112,21 @@ function getExportArr(struct) {
 				let cnt = getLastValid("main", "sht_off_cnt");
 				sht_off_off = arr.length;
 				// push placeholder values
-				let entrySize = struct.ver > 12 ? 4 : 8;
-				arr.push.apply(arr, new Array(cnt*entrySize)); //cnt - amount of offsets
-				// these values will be later updated
+				let entrySize = struct.ver > 12 ? 4 : 8; // TODO: bad hardcode, compute the size from the struct instead of checking version
+				
+				for (let i=0; i<cnt*entrySize; ++i) {
+					// these values will be later updated to nonzero
+					arr.push(0);
+				}
 			break;
 			case "sht_arr":
 				let {push, offsets, powers} = getExportShtArr(struct);
 				arr.push.apply(arr, push);
-				if (offsets.length != getLastValid("main", "sht_off_cnt")) err("shoot offset count mismatch (should be "+offsets.length+")", true);
-				let entrysize = struct.ver > 12 ? 4 : 8;
+
+				if (offsets.length != getLastValid("main", "real_sht_off_cnt"))
+					err("shoot offset count mismatch (should be "+offsets.length+") - this indicates a bad real_sht_off_cnt", true);
+				
+				let entrysize = struct.ver > 12 ? 4 : 8; // TODO: same bad hardcode as above
 				for (let j=0; j<offsets.length; j++) {
 					let off = struct.sht_off_type == "rel" ? offsets[j] : offsets[j] + sht_off_off + offsets.length*entrysize;
 					let bytes = uint32ToBytes(off).reverse();

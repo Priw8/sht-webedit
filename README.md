@@ -77,5 +77,6 @@ shooter tables
 more about fire_rate/start_delay
 
 - PCB - shooting uses a 60-frame timer.  For bullets to fire consistently, choose a fire_rate that is a factor of 60
-- IN-DDC - shooting uses a 15-frame timer, so any rate other than 1, 3, 5, or 15 will be uneven
+- IN-DDC (except for MoF) - shooting uses a 15-frame timer, so any rate other than 1, 3, 5, or 15 will be uneven
+- MoF - shooting uses a 16-frame timer, so any rate other than 1, 2, 4, 8, or 16 will be uneven
 - LoLK onwards - fire_rate/start_delay still use a 15-frame timer, but there are alternative fields fire_rate2/start_delay2 that use a 120-frame timer. (when fire_rate2 is set, the original fire_rate/start_delay are ignored).  Shots using this timer famously have rare bugs that can cause them to stop firing

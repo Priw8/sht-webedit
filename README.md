@@ -15,7 +15,8 @@ a tool for editing .sht files used in Touhou games - https://priw8.github.io/sht
 - TH15 - Legacy of Lunatic Kingdom
 - TH16 - Hidden Star in Four Seasons
 - TH16.5 - Violet Detector
-- TH17 - Wily Beast and Weakest Creature (demo)
+- TH17 - Wily Beast and Weakest Creature
+- TH18 - Unconnected Marketeers
 - 黄昏酒場 ～ Uwabami Breakers (alcostg)
 
 the tool will be updated with support for more games.
@@ -24,17 +25,17 @@ the tool will be updated with support for more games.
 - load data of .sht files into editable tables
 - freely modify shootersets
 - export edited data back to .sht
-- some tools to make life easier (console for evaluating js code, radians <-> degrees converer)
+- some tools to make life easier (console for evaluating js code, radians <-> degrees converter)
 
 ### TODO
 - find out what the unknown values do
 
 ## How .sht files work
 ### TH10+
-Basically there's a header (the "main" table) which stores the basic informations. After the header, there are option positions for each power level (power level = option count). Then there's the shooterset offset array, which stores offsets of shootersets in the shooterset array. The shooterset array comes right after the shooterset offset array, and consists of shootersets separated by 4 FF bytes. Basically, if pwr_lvl_cnt (max power level) is 4, there should be 10 shootersets - 5 for each power level of the unfocused shot and 5 for each level of the focused shot (0 power shooterset exists, despite power starting at 1 in the game. It's used in HSiFS during the Okina finals). In some cases, there can be more shootersets (TD has one more for trance mode). A shooterset itself is a set of shooters (duh). A shooter contains data of a single bullet the player/option fires, and the frequency it should fire at. So if you want an option to shoot 2 bullets at once, you have to assign it to 2 shooters.
+Basically there's a header (the "main" table) which stores the basic information. After the header, there are option positions for each power level (power level = option count). Then there's the shooterset offset array, which stores offsets of shootersets in the shooterset array. The shooterset array comes right after the shooterset offset array, and consists of shootersets separated by 4 FF bytes. Basically, if pwr_lvl_cnt (max power level) is 4, there should be 10 shootersets - 5 for each power level of the unfocused shot and 5 for each level of the focused shot (0 power shooterset exists, despite power starting at 1 in the game. It's used in HSiFS during the Okina finals). In some cases, there can be more shootersets (TD has one more for trance mode). A shooterset itself is a set of shooters (duh). A shooter contains data of a single bullet the player/option fires, and the frequency it should fire at. So if you want an option to shoot 2 bullets at once, you have to assign it to 2 shooters.
 
 ### TH07, TH08 (TH06 doesn't have .shts, shot data is probably hardcoded)
-It's quite a bit different than TH10+. Most notably, option table doesn't exist (options probably hardcoded), and there's no focus/unfocus split in the file itself - there are 2 .shts per shottype, 1 for unfocused shot and 1 for the focused shot. There are also more things that can be modified there, such as at what height PoC is. Power levels work differently too, as the .sht controls when the switch to the next shooterset occurs. This that there are up to 129 power levels avalible (0-128 inclusive)
+It's quite a bit different than TH10+. Most notably, option table doesn't exist (options probably hardcoded), and there's no focus/unfocus split in the file itself - there are 2 .shts per shottype, 1 for unfocused shot and 1 for the focused shot. There are also more things that can be modified there, such as at what height PoC is. Power levels work differently too, as the .sht controls when the switch to the next shooterset occurs. This and there are up to 129 power levels available (0-128 inclusive)
 
 ## Brief usage instructions
 **main table**

@@ -115,8 +115,7 @@ function getExportArr(struct) {
 				let entrySize = struct.ver > 12 ? 4 : 8; // TODO: bad hardcode, compute the size from the struct instead of checking version
 				
 				for (let i=0; i<cnt*entrySize; ++i) {
-					// these values will be later updated to nonzero
-					arr.push(0);
+					arr.push(struct.dummy_offset_value ?? 0);
 				}
 			break;
 			case "sht_arr":

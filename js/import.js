@@ -242,7 +242,7 @@ outerLoop:
 		for (let j=0; j<off_struct.length; j+=2) {
 			if (off_struct[j] == "offset") {
 				let val = readUint32(arr[offset+3], arr[offset+2], arr[offset+1], arr[offset]);
-				if (val == 0 && !isFirstOffset) {
+				if (val === struct.dummy_offset_value && !isFirstOffset) {
 					break outerLoop;
 				}
 				off.push(val);

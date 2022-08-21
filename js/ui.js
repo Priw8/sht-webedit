@@ -697,7 +697,7 @@ function generateShootArrayTable(data, struct) {
 			tables.sht_arr[foc][pow] = [];
 			let i=0;
 			for (i; i<shooters.length; i++) {
-				let html = generateOneShooterTable(shooters[i], shtstruct, struct.flags_len, struct.flag_size, foc, pow, i);
+				let html = shooters[i] == null ? "(placeholder shooterset with 0xffffffff offset)" : generateOneShooterTable(shooters[i], shtstruct, struct.flags_len, struct.flag_size, foc, pow, i);
 				let $wrap = document.createElement("div");
 				$wrap.classList.add("shooter-table");
 				$wrap.innerHTML = html;

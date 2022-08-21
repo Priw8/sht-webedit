@@ -1,6 +1,6 @@
-window.struct_18 = {
-	ver: 18,
-	editorVer: "18",
+window.struct_185 = {
+	ver: 185,
+	editorVer: "185",
 	main: [
 		"unknown_head", "int16",
 		"sht_off_cnt", "int16",
@@ -62,7 +62,7 @@ window.struct_18 = {
 	flags_len: 0x20,
 	flag_size: 4,
 	type: "maingame",
-	forced_shtoffarr_len: 0x28, // TODO: check if it's actually forced in th18 (it probably still is)
-	f_uf_shooter_split: true,
-	dummy_offset_value: 0x00000000
+	forced_shtoffarr_len: 0x28, // TODO: check if it's actually forced in th185 (it probably still is)
+	f_uf_shooter_split: false,
+    dummy_offset_value: 0xffffffff
 };

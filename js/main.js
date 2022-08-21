@@ -1,7 +1,7 @@
 // NEWHOU
-let version = "2.3a";
+let version = "2.4a";
 let changelog = [
-	"add UM support (experimental-ish)"
+	"add BM support (experimental-ish)"
 ];
 let $fileinfo, $console, $logs, $evalInput, $radDeg, $radInput, $degInput, $filetree, $container, $tip, $open, $ver, 
 	$verOut, $filename, $export, $log, $clipboard, $openLS, $openLSsel, currentStruct, saveByteArray, validationOff = false;
@@ -41,6 +41,8 @@ function getStruct($sel, raw) {
 			return window.struct_17;
 		case "18":
 			return window.struct_18;
+		case "18.5":
+			return window.struct_185;
 		// NEWHOU
 		default:
 			throw "unsupported version";

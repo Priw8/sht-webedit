@@ -1,7 +1,7 @@
 // NEWHOU
-let version = "2.4a";
+let version = "2.5a";
 let changelog = [
-	"add BM support (experimental-ish)"
+	"add UDoALG support (very experimental, there are unknown fields and some may have incorrect sizes!)"
 ];
 let $fileinfo, $console, $logs, $evalInput, $radDeg, $radInput, $degInput, $filetree, $container, $tip, $open, $ver, 
 	$verOut, $filename, $export, $log, $clipboard, $openLS, $openLSsel, currentStruct, saveByteArray, validationOff = false;
@@ -43,6 +43,8 @@ function getStruct($sel, raw) {
 			return window.struct_18;
 		case "18.5":
 			return window.struct_185;
+		case "19":
+			return window.struct_19;
 		// NEWHOU
 		default:
 			throw "unsupported version";
